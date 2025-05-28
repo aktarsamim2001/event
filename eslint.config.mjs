@@ -10,7 +10,16 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // extends from Next.js core web vitals and typescript config
+  ...compat.extends("next/core-web-vitals", "next/typescript", "plugin:react/recommended"),
+
+  // custom rules
+  {
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+    },
+  },
 ];
 
 export default eslintConfig;
