@@ -5,7 +5,7 @@ export async function generateMetadata({ params }) {
   const awaitedParams = typeof params?.then === 'function' ? await params : params;
   const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
   const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const res = await fetch(`${rootUrl}/api/web/events/details/${slug}`, { cache: "no-store" });
+  const res = await fetch(`${rootUrl}api/web/pages/list?slug=${slug}`, { cache: "no-store" });
   const apiData = await res.json();
   const meta = apiData?.data?.meta || {};
   console.log("Meta Data:", meta);
