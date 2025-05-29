@@ -1,3 +1,6 @@
+import axios from "axios";
+const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
+
 export const fetchEventsAPI = async ({
     page = 1,
     perPage = 10,

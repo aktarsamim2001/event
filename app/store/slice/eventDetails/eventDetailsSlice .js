@@ -2,7 +2,6 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
-
 // Initial state for event details
 const initialState = {
   data: {},

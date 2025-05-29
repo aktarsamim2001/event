@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Ensure BASE_URL is correctly set in your environment variables
 const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 

@@ -1,81 +1,42 @@
-'use client';
+import DynamicPage from "./DynamicPage";
 
-import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "next/navigation";
-import { fetchPageData, clearPageData } from "@/app/store/slice/homePage/homePageSlice";
-import Home from "@/app/page/Home/Home";
-import SkeletonView from "@/app/components/Skeleton/SkeletonView";
+export async function generateMetadata({ params }) {
+  // Await params if it's a Promise (Next.js 14+ streaming routes)
+  const awaitedParams = typeof params?.then === 'function' ? await params : params;
+  const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
+  const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const res = await fetch(`${rootUrl}api/web/pages/list?slug=${slug}`, { cache: "no-store" });
+  const apiData = await res.json();
+  const meta = apiData?.data?.meta || {};
 
-export default function DynamicPage() {
-  const params = useParams();
-
-  const rawSlug = params?.slug;
-  const slug = typeof rawSlug === "string" ? rawSlug : rawSlug?.[0] || "home";
-
-  const dispatch = useDispatch();
-  const [localData, setLocalData] = useState(null);
-  const [finalSlug, setFinalSlug] = useState("");
-  const [metaData, setMetaData] = useState({});
-  const [template, setTemplate] = useState("");
-  const [content, setContent] = useState({});
-  const { data, isLoading } = useSelector(state => state.dynamicPage) || {};
-
-  console.log("params:", params);
-  console.log("slug:", slug);
-  console.log("DynamicPage data:", data);
-
-  if (typeof window === 'undefined') {
-    console.log("DynamicPage data (SSR/server):", data);
-  }
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedLocation = localStorage.getItem("userLocation");
-      if (storedLocation) {
-        setLocalData(JSON.parse(storedLocation));
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    setFinalSlug(slug);
-    setMetaData(data?.meta || {});
-    setContent(data?.content || {});
-    setTemplate(data?.template || '');
-  }, [slug, data, dispatch]);
-
-  const latitude = localData?.coords?.latitude;
-  const longitude = localData?.coords?.longitude;
-
-  useEffect(() => {
-    if (finalSlug && latitude && longitude) {
-      dispatch(clearPageData());
-      dispatch(fetchPageData(finalSlug, latitude, longitude));
-    }
-  }, [finalSlug, latitude, longitude, dispatch]);
-
-if (isLoading || !template || !data) {
-  return (
-    <div className="bg-black">
-      <SkeletonView customHighlightBackground="linear-gradient(90deg, var(--base-color) 40%, var(--highlight-color) 50%, var(--base-color) 60%)" />
-    </div>
-  );
+  return {
+    title: meta.meta_title || `RallyUp-${slug}`,
+    description: meta.meta_description || "Find local events and things to do in your city.",
+    keywords: meta.meta_keywords || undefined,
+    authors: meta.meta_author ? [{ name: meta.meta_author }] : undefined,
+    openGraph: {
+      title: meta.meta_title || `RallyUp-${slug}`,
+      description: meta.meta_description || "Find local events and things to do in your city.",
+      url: `https://rallyup.in/${slug === 'home' ? '' : slug}`,
+      type: "website",
+      images: [
+        {
+          url: meta.meta_feature_image || "/default-og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: meta.meta_title || `RallyUp-${slug}`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.meta_title || `RallyUp-${slug}`,
+      description: meta.meta_description || "Find local events and things to do in your city.",
+      images: [meta.meta_feature_image || "/default-og-image.jpg"],
+    },
+  };
 }
 
-
-  const renderPages = () => {
-    switch (template) {
-      case "home_page":
-        return <Home content={content} meta={metaData}/>;
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <>
-      {renderPages()}
-    </>
-  );
+export default function Page() {
+  return <DynamicPage />;
 }
