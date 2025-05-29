@@ -9,30 +9,8 @@ import TrendingEvents from "../../components/Home/TrendingEvents";
 import LiveEvent from "../../components/Home/LiveEvent";
 import EventOrganizer from "../../components/Home/EventOrganizer";
 
-const Home = ({ content, meta }) => {
+const Home = ({ content }) => {
 
-  const {
-    meta_title,
-    meta_description,
-    meta_feature_image,
-    meta_keywords,
-    meta_author,
-    // Fallbacks for legacy keys
-    title,
-    description,
-    ogImage,
-    ogTitle,
-  } = meta || {};
-
-  const url = typeof window !== "undefined" ? window.location.href : "https://rallyup.in/";
-  const siteName = "RallyUp";
-  const image = meta_feature_image || ogImage || "/default-og-image.jpg";
-  const imageAlt = meta_title || title || "RallyUp";
-  const imageWidth = "1200";
-  const imageHeight = "630";
-
-  
-  console.log("meta", meta);
   console.log("content", content);
 
   useEffect(() => {

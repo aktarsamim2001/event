@@ -6,7 +6,6 @@ import { useParams } from "next/navigation";
 import { fetchPageData, clearPageData } from "@/app/store/slice/homePage/homePageSlice";
 import Home from "@/app/page/Home/Home";
 import SkeletonView from "@/app/components/Skeleton/SkeletonView";
-import MetaHead from "@/app/components/MetaHead";
 
 export default function DynamicPage() {
   const params = useParams();
@@ -76,7 +75,6 @@ if (isLoading || !template || !data) {
 
   return (
     <>
-      <MetaHead meta={metaData} />
       {renderPages()}
     </>
   );
