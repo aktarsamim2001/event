@@ -4,6 +4,7 @@ import React from "react";
 import Head from "next/head";
 
 const MetaHead = ({ meta }) => {
+  console.log("MetaHead metcxzcxzca:", meta);
   const {
     meta_title,
     meta_description,

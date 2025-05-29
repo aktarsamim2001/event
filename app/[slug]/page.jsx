@@ -56,11 +56,14 @@ export default function DynamicPage() {
     }
   }, [finalSlug, latitude, longitude, dispatch]);
 
-  if (isLoading || !template || !data) {
-    return (
+if (isLoading || !template || !data) {
+  return (
+    <div className="bg-black">
       <SkeletonView customHighlightBackground="linear-gradient(90deg, var(--base-color) 40%, var(--highlight-color) 50%, var(--base-color) 60%)" />
-    );
-  }
+    </div>
+  );
+}
+
 
   const renderPages = () => {
     switch (template) {
