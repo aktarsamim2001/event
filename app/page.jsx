@@ -5,35 +5,38 @@ import DynamicPage from "./[slug]/page";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-export async function generateMetadata() {
-  const meta = {
-    meta_title: "RallyUp-Home",
-    meta_description: "Find local events and things to do in your city.",
-    meta_feature_image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  };
+export async function generateMetadata({ params } = {}) {
+  const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
+  const slug = params?.slug ? (Array.isArray(params.slug) ? params.slug[0] : params.slug) : "home";
+  const res = await fetch(`${rootUrl}api/web/pages/list?slug=${slug}`, { cache: "no-store" });
+  const apiData = await res.json();
+  console.log("API Responsegdgfdfgdf:", apiData);
+  const meta = apiData?.data?.meta || {};
 
   return {
-    title: meta.meta_title,
-    description: meta.meta_description,
+    title: meta.meta_title || `RallyUp-${slug}`,
+    description: meta.meta_description || "Find local events and things to do in your city.",
+    keywords: meta.meta_keywords || undefined,
+    authors: meta.meta_author ? [{ name: meta.meta_author }] : undefined,
     openGraph: {
-      title: meta.meta_title,
-      description: meta.meta_description,
-      url: "https://rallyup.in/",
+      title: meta.meta_title || `RallyUp-${slug}`,
+      description: meta.meta_description || "Find local events and things to do in your city.",
+      url: `https://rallyup.in/${slug === 'home' ? '' : slug}`,
       type: "website",
       images: [
         {
-          url: meta.meta_feature_image,
+          url: meta.meta_feature_image || "/default-og-image.jpg",
           width: 1200,
           height: 630,
-          alt: meta.meta_title,
+          alt: meta.meta_title || `RallyUp-${slug}`,
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: meta.meta_title,
-      description: meta.meta_description,
-      images: [meta.meta_feature_image],
+      title: meta.meta_title || `RallyUp-${slug}`,
+      description: meta.meta_description || "Find local events and things to do in your city.",
+      images: [meta.meta_feature_image || "/default-og-image.jpg"],
     },
   };
 }
