@@ -5,12 +5,17 @@ import DynamicPage from "./[slug]/page";
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
-export async function generateMetadata({ params } = {}) {
+export async function generateMetadata({ params }) {
   const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
-  const slug = params?.slug ? (Array.isArray(params.slug) ? params.slug[0] : params.slug) : "home";
+  const slug = params?.slug
+    ? Array.isArray(params.slug)
+      ? params.slug[0]
+      : params.slug
+    : "home";
+
   const res = await fetch(`${rootUrl}api/web/pages/list?slug=${slug}`, { cache: "no-store" });
   const apiData = await res.json();
-  console.log("API Responsegdgfdfgdf:", apiData);
+
   const meta = apiData?.data?.meta || {};
 
   return {
