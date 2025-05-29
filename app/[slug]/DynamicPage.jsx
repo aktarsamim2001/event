@@ -7,6 +7,17 @@ import { fetchPageData, clearPageData } from "@/app/store/slice/homePage/homePag
 import Home from "@/app/page/Home/Home";
 import SkeletonView from "@/app/components/Skeleton/SkeletonView";
 import EventListing from "../page/Event/EventListing";
+import EventHostPage from "../page/EventHost/EventHostPage";
+import EventGoers from "../page/EventGoers/EventGoers";
+import About from "../page/About/About";
+import Contact from "../page/ContactUs/Contact";
+import Disclaimer from "../components/Footer/Disclaimer";
+import PrivacyPolicy from "../components/Footer/PrivacyPolicy";
+import FaqSection from "../components/Contact/Faq";
+import BookConsultation from "../components/Contact/BookConsultation";
+import AskQuestion from "../components/Contact/AskQuestion";
+import RequestCall from "../components/Contact/RequestCall";
+
 
 export default function DynamicPage() {
   const params = useParams();
@@ -66,7 +77,27 @@ export default function DynamicPage() {
         return <Home content={content} />;
       case "event_page":
         return <EventListing content={content} />;
-      default:
+    case "event_host_page":
+        return <EventHostPage content={content} />;
+    case "event_goers_page":
+        return <EventGoers content={content} />;
+    case "about_page":
+        return <About content={content} />;
+    case "support_page":
+        return <Contact content={content} />;
+    case "block_page":
+        return <Disclaimer content={content} />;
+    case "Privacy Policy":
+        return <PrivacyPolicy content={content} />;
+    case "support_faq_page":
+        return <FaqSection content={content} />;
+    case "consultation_form_page":
+        return <BookConsultation content={content} />;
+    case "partner_form_page":
+        return <AskQuestion content={content} />;
+    case "request_feature_form_page":
+        return <RequestCall content={content} />;
+    default:
         return null;
     }
   };

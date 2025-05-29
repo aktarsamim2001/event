@@ -43,3 +43,45 @@ export const fetchEventsAPI = async ({
         throw new Error("Failed to fetch events");
     }
 };
+
+export const getGenaralSettings = async () => {
+    return await axios.get(`${rootUrl}api/web/general-settings`);
+};
+
+export const fetchEventDetailsAPI = async (slug) => {
+    const url = `${rootUrl}api/web/events/details/${slug}`;
+    const response = await axios.get(url);
+    return response.data;
+}
+
+export const postCallRequest = async (data) => {
+    return await axios.post(`${rootUrl}api/web/enquiry-call-request/create`, data);
+};
+
+// Add this function to your api_service.js
+export const postBookConsultation = async (data) => {
+    return await axios.post(`${rootUrl}api/web/enquiry-book-consultation/create`, data);
+};
+
+export const postPartnerWithUs = async (data) => {
+    return await axios.post(`${rootUrl}api/web/enquiry-partner-withus/create`, data);
+}
+
+export const postEventEnquiry = async (data) => {
+    return await axios.post(`${rootUrl}api/web/event-enquiry/create`, data);
+}
+
+export const postSupportForm = async (formData) => {
+    try {
+      return await axios.post(`${rootUrl}api/web/support-enquiry/create`, formData);
+    } catch (error) {
+      throw new Error(error.response?.data?.message || "Failed to submit request");
+    }
+  };
+
+
+export const getEventReviews = async () => {
+  const response = await axios.get(`${rootUrl}api/web/event-review/list?event_id=${event_id}`);
+  return response.data;
+};
+
