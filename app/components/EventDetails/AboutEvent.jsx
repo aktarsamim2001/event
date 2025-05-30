@@ -84,7 +84,7 @@ export default function AboutEvent() {
             {tabs.slice(0, visibleTabs).map((tab) => (
               <Button
                 key={tab.id}
-                varient={"outline"}
+                variant={"outline"}
                 onClick={() => setActiveTab(tab.id)}
                 className={`!px-4 !py-2 text-center whitespace-nowrap transition-all duration-300 ${
                   activeTab === tab.id
@@ -102,7 +102,7 @@ export default function AboutEvent() {
                 style={{ display: "inline-block", position: "relative" }}
               >
                 <Button
-                  varient={"outline"}
+                  variant={"outline"}
                   onClick={() => setShowDropdown((prev) => !prev)}
                   className={`!px-4 !py-2 text-center flex justify-between items-center gap-x-2 relative transition-all duration-300 ${
                     tabs.slice(visibleTabs).some((tab) => tab.id === activeTab)

@@ -16,7 +16,7 @@ const CTABanner = ({ className,title,button,buttonLink,background }) => {
       <h2 className="text-2xl md:text-4xl mb-6 font-bold text-white leading-tight __heading">
       {title}
       </h2>
-      <Button varient={"fill"}>
+      <Button variant={"fill"}>
         <Link target="_blank" href={buttonLink}>{button}</Link>
       </Button>
     </div>

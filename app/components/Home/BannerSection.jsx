@@ -106,9 +106,9 @@ const BannerSection = ({ bannerData }) => {
                   className="w-full px-4 placeholder:ml-32.5 md:px-5 md:py-3.5 py-3 text-white placeholder:text-white rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-__primaryColor"
                 />
                 <Button
-                  varient="fill"
+                  variant="fill"
                   type="submit"
-                  className="absolute right-1 top-4 md:right-1.5 md:top-1/2 translate-y-2/3 md:-translate-y-1/2 !px-4.5 md:!py- md:!px-6 !py-2 rounded-full transition-colors flex items-center gap-2 hover:!text-black"
+                  className="absolute right-1 top-4 md:right-1.5 md:top-1/2 translate-y-2/3 md:-translate-y-1/2 !px-4.5 md:!py- md:!px-6 !py-2 rounded-full transition-colors flex items-center gap-2"
                 >
                   Explore
                   <FaArrowUpRightFromSquare size={18} />
@@ -157,6 +157,7 @@ const BannerSection = ({ bannerData }) => {
                       src={image}
                       alt={`Event ${index + 1}`}
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="w-full h-full object-cover"
                       priority
                     />

@@ -72,7 +72,7 @@ const FaqSection = ({ content }) => {
         </div>
         <div className="mt-10 flex flex-col items-center">
           <div className="relative flex items-center justify-between w-full">
-            <Button varient={'outline'} className={'!p-0 mt-0 md:mt-7.5 !rounded-[50%]'}>
+            <Button variant={'outline'} className={'!p-0 mt-0 md:mt-7.5 !rounded-[50%]'}>
               <Link href={content?.support_faq_page?.page_details?.redirection_url} className="p-3 block">
                 <IoIosArrowBack className="w-5 h-5" />
               </Link>
@@ -83,8 +83,8 @@ const FaqSection = ({ content }) => {
                 {content?.support_faq_page?.page_details?.button_above_text}
               </p>
               <Button
-                varient="fill"
-                className="inline-flex items-center gap-2 ml-auto !px-5 !py-3.5 rounded-full text-sm md:text-lg"
+                variant="fill"
+                className="inline-flex items-center gap-2 ml-auto !px-5 rounded-full text-sm md:text-lg"
                 onClick={handleClick}
               >
                 {content?.support_faq_page?.page_details?.button}

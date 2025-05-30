@@ -48,14 +48,16 @@ const EventHostGallery = ({ className }) => {
             onClick={() => handleViewAll(item.id)}
             className="Gmain_backdrop relative cursor-pointer overflow-hidden transform transition-transform duration-300"
           >
-            <Image
-              className="object-cover w-full h-full"
-              src={item?.backgorund_image}
-              alt={item?.title}
-              fill
-              loading="lazy"
-              priority={false}
-            />
+            <div className="relative w-full h-[280px]">
+              <Image
+                src={item?.backgorund_image}
+                alt={item?.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className=" object-cover"
+                loading="lazy"
+              />
+            </div>
             <div className="absolute left-0 bottom-0 w-full px-2.5 py-3 bg-black/70 backdrop-blur-sm">
               <div className="text-lg md:text-xl lg:text-2xl truncate font-semibold __heading text-white">
                 {item?.title}
@@ -63,7 +65,8 @@ const EventHostGallery = ({ className }) => {
             </div>
             <div className="absolute top-1.5 right-2.5 bg-black/90 backdrop-blur-sm rounded px-2 py-1 gallery_event font-medium">
               <h2 className="text-sm text-white">
-                {item?.event_count || 0} {item?.event_count > 1 ? "Events" : "Event"}
+                {item?.event_count || 0}{" "}
+                {item?.event_count > 1 ? "Events" : "Event"}
               </h2>
             </div>
           </div>

@@ -23,7 +23,7 @@ const PageBanner = ({ title, subtitle, button, search, buttonLink }) => {
           )}
           {button && (
             <Link target="_blank" href={buttonLink}>
-              <Button varient={"fill"} className="mt-4 flex items-center gap-2">
+              <Button variant={"fill"} className="mt-4 flex items-center gap-2">
                 {button}
                 <IoIosArrowForward size={18} />
               </Button>

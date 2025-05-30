@@ -7,13 +7,7 @@ import "swiper/css/navigation";
 import Link from "next/link";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-
-const Button = ({ children, variant, className, ...props }) => {
-  const baseStyles = "px-3 py-1.5 rounded-md";
-  const outlineStyles = "border border-[#ffffff26] text-white hover:bg-[#ffffff26]";
-  const styles = `${baseStyles} ${variant === "outline" ? outlineStyles : ""} ${className || ""}`;
-  return <button className={styles} {...props}>{children}</button>;
-};
+import Button from "../ui/Button";
 
 export default function YouMayLikeEvents() {
   const eventDetails = useSelector((state) => state.eventDetails?.data);
@@ -25,20 +19,17 @@ export default function YouMayLikeEvents() {
     <div>
       <div>
         <div className="grid grid-cols-[auto_95px] justify-between items-center sm:items-center">
-          <h2 className="text-[18px] md:text-[25px] font-bold text-white leading-tight">
+          <h2 className="text-[18px] md:text-[25px] font-bold text-white leading-tight __heading mb-4">
             You May Like
           </h2>
           <div className="flex justify-end items-center mt-4 sm:mt-0">
             <Button
-              variant="outline"
+              variant={"outline"}
               className="!py-1.5 !px-3 mr-3 nearby_event_next"
             >
               <FaArrowLeft />
             </Button>
-            <Button
-              variant="outline"
-              className="!py-1.5 !px-3 nearby_event_prev"
-            >
+            <Button variant={"outline"} className="!py-1.5 !px-3 nearby_event_prev">
               <FaArrowRight />
             </Button>
           </div>
@@ -90,26 +81,26 @@ export default function YouMayLikeEvents() {
                       />
                       <div className="absolute bottom-0 left-0 w-full p-4 backdrop-blur-xl grid grid-cols-[auto_100px] justify-between items-start rounded-[15px] bg-[#e0dddd00] gap-x-2">
                         <div className="w-full">
-                          <div className="text-[20px] font-bold line-clamp-1 text-white">
+                          <div className="__heading text-[20px] font-bold line-clamp-1 text-white">
                             {event?.title}
                           </div>
                           <div className="flex items-center pr-2">
-                            <p className="line-clamp-1 text-white">
+                            <p className="line-clamp-1 text-white __text">
                               {event?.city_detail?.name},{" "}
                               <span>{event?.state_detail?.name}</span>{" "}
                             </p>
                             <span className="text-[#6e4938] mx-1">~</span>{" "}
-                            <div className="flex items-center gap-0.5 text-white">
+                            <div className="flex items-center gap-0.5 text-white __text">
                               <span>{event?.currency_detail?.currency}</span>
                               {formattedPrice}
                             </div>
                           </div>
                         </div>
                         <div className="text-center backdrop-blur-sm text-[12px] rounded-[10px] overflow-hidden">
-                          <div className="backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white">
+                          <div className="__text backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white">
                             {formattedDate}
                           </div>
-                          <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e]">
+                          <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e] __text">
                             {formattedTime}
                           </div>
                         </div>

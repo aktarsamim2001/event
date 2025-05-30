@@ -18,11 +18,10 @@ import {
   setFilterFormValues,
 } from "../../store/slice/eventFilter/eventFilterSlice";
 import { useForm, Controller } from "react-hook-form";
+import { data, useSearchParams } from "next/navigation";
 import dayjs from "dayjs";
-import { useSearchParams, usePathname } from "next/navigation";
 
-// Custom CSS for date pickers
-const datePickerStyles = `
+const datePickerStyles =`
 .react-datepicker {
     background: #22F106;
     border: 2px solid #ffffff33;
@@ -42,7 +41,7 @@ const datePickerStyles = `
     font-size: 14px;
   }
   .react-datepicker__day:hover {
-    background: red;
+    background: green !important;
     border-radius: 6px;
     color: black;
     transition: background 0.2s ease;
@@ -115,7 +114,7 @@ const datePickerStyles = `
 }
 `;
 
-const EventFilter = ({ search, isSearchVisible }) => {
+const CityFilter = ({ search, isSearchVisible }) => {
   const dispatch = useDispatch();
   const { data: eventFilterData } = useSelector(
     (state) => state.eventFilterSlice
@@ -126,20 +125,20 @@ const EventFilter = ({ search, isSearchVisible }) => {
   const { data: areaData } = useSelector((state) => state.areas);
   const { data: ticketTypeData } = useSelector((state) => state.ticketTypes);
 
-  // Next.js search params
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
   const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [expand, setExpand] = useState(false);
   const [eventFilteredItems, setEventFilteredItems] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [formValues, setFormValues] = useState({});
   const [categoryName, setCategoryName] = useState();
-  const { register, handleSubmit, control, setValue, reset, watch } = useForm({});
+  const { register, handleSubmit, control, setValue, reset,watch } = useForm({
+    // defaultValues: {
+    //   category: "all-events",
+    // },
+  });
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      setFormValues(JSON.parse(localStorage.getItem("filterFormValues")));
-    }
+    setFormValues(JSON.parse(localStorage.getItem("filterFormValues")));
   }, [searchParams]);
 
   useEffect(() => {
@@ -149,11 +148,9 @@ const EventFilter = ({ search, isSearchVisible }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const handleResize = () => setWidth(window.innerWidth);
-      window.addEventListener("resize", handleResize);
-      return () => window.removeEventListener("resize", handleResize);
-    }
+    const handleResize = () => setWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const toggleExpand = () => setExpand(!expand);
@@ -175,53 +172,57 @@ const EventFilter = ({ search, isSearchVisible }) => {
     );
   }, [eventFilterData]);
 
-  useEffect(() => {
-    if (formValues && Object.keys(formValues).length > 0) {
-      if (formValues.dateFrom) {
-        formValues.dateFrom = new Date(formValues.dateFrom);
-      }
-      if (formValues.dateTo) {
-        formValues.dateTo = new Date(formValues.dateTo);
-      }
-      reset(formValues);
-    }
-  }, [formValues, reset]);
-
   const onSubmit = async (data) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("filterFormValues", JSON.stringify(data));
+    const urlParams = new URLSearchParams(window.location.search);
+    let city_slug = urlParams.get("city_slug");
+    if (!city_slug) {
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      city_slug = pathParts.includes("city") ? pathParts[pathParts.indexOf("city") + 1] : undefined;
     }
+
+    localStorage.setItem("filterFormValues", JSON.stringify(data));
+
     const selectedCategory = eventFilterData.find(
       (item) => item.id === data.event_category_id
     );
     const categoryTitle = selectedCategory?.title || "All Events";
     setCategoryName(categoryTitle);
+
     const cleanUrlData = {};
+
     Object.entries(data).forEach(([key, value]) => {
       if (key !== "event_category_id") {
         cleanUrlData[key] = value;
       }
     });
+
     if (data.event_category_id && data.event_category_id !== "all-events") {
       cleanUrlData.event_category_id = data.event_category_id;
     }
+
     if (data.area) {
       const selectedArea = areaData.find((area) => area.name === data.area);
       if (selectedArea) {
         cleanUrlData.area = selectedArea.name;
       }
     }
-    // Next.js: update URL search params
-    if (typeof window !== "undefined") {
-      const newParams = new URLSearchParams();
-      Object.entries(cleanUrlData).forEach(([key, value]) => {
-        if (value !== undefined && value !== null && value !== "") {
-          newParams.set(key, value);
-        }
-      });
-      const url = `${pathname}?${newParams.toString()}`;
-      window.history.replaceState(null, "", url);
+
+    if (data.sort) {
+      cleanUrlData.sort = data.sort;
     }
+
+    if (city_slug) {
+      cleanUrlData.city_slug = city_slug;
+    }
+
+    const newParams = new URLSearchParams();
+    Object.entries(cleanUrlData).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && value !== "") {
+        newParams.set(key, value);
+      }
+    });
+
+    setSearchParams(newParams);
   };
 
   const handleReset = () => {
@@ -236,22 +237,20 @@ const EventFilter = ({ search, isSearchVisible }) => {
       event_subcategory: "",
     });
     setEventFilteredItems([]);
-    if (typeof window !== "undefined") {
-      window.history.replaceState(null, "", pathname);
-      localStorage.removeItem("filterFormValues");
-    }
+    setSearchParams("");
+    localStorage.removeItem("filterFormValues");
     setEventFilteredItems(
       eventFilterData.flatMap((item) => item.children || [])
     );
   };
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
     const getFormdata = JSON.parse(localStorage.getItem("filterFormValues"));
     const urlParams = new URLSearchParams(window.location.search);
+
     const formValues = {
       date_from: urlParams.get("date_from") || getFormdata?.date_from || null,
-      date_to: urlParams.get("date_to") || getFormdata?.date_to || null,
+      date_to: urlParams.get("date_from") || getFormdata?.date_to || null,
       event_category_id:
         urlParams.get("event_category_id") ||
         getFormdata?.event_category_id ||
@@ -260,40 +259,40 @@ const EventFilter = ({ search, isSearchVisible }) => {
       search: urlParams.get("search") || getFormdata?.search || "",
       area: urlParams.get("area") || getFormdata?.area || "",
       event_type: urlParams.get("event_type") || getFormdata?.event_type || "",
-      ticket_type_id:
-        urlParams.get("ticket_type_id") || getFormdata?.ticket_type_id || "",
+      ticket_type_id: urlParams.get("ticket_type_id") || getFormdata?.ticket_type_id || "",
       event_subcategory:
-        urlParams.get("event_subcategory") ||
-        getFormdata?.event_subcategory ||
-        "",
+        urlParams.get("event_subcategory") || getFormdata?.event_subcategory || "",
     };
+
     reset(formValues);
+
+    // Update the category name and filtered items
     const selectedCategory = eventFilterData.find(
       (item) => item.id === formValues.event_category_id
     );
     setCategoryName(selectedCategory?.title || "All Events");
     setEventFilteredItems(selectedCategory?.children || []);
-    if (formValues.event_subcategory && selectedCategory?.children) {
-      setTimeout(() => {
-        setValue("event_subcategory", formValues.event_subcategory);
-      }, 0);
-    }
-  }, [reset, eventFilterData]);
 
-  const getTicketId = (id) => {};
+  if (formValues.event_subcategory && selectedCategory?.children) {
+    setTimeout(() => {
+      setValue("event_subcategory", formValues.event_subcategory);
+    }, 0);
+  }
+  }, [reset, eventFilterData]);
 
   return (
     <div className="__container __responsive_gap">
       <style>{datePickerStyles}</style>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {isSearchVisible && (
           <div>
             <div className="text-[clamp(32px,_6vw,_45px)] __heading leading-tight">
-              {search?.title}
+              Discover Amazing Events
+              {/* {search?.title} */}
             </div>
-            <div className="mb-6 __text text-[20px]">{search?.content}</div>
+            <div className="mb-6 __text text-[20px]">
+              {/* {search?.content} */}
+              Your Trusted Event Ticketing Partner</div>
           </div>
-        )}
         <div className="grid grid-cols-1 lg:flex items-center gap-x-3 flex-wrap justify-center gap-y-2">
           <div className="grid grid-cols-2 lg:grid-cols-[180px_auto_180px] gap-x-2 items-center">
             <div className="relative">
@@ -308,8 +307,8 @@ const EventFilter = ({ search, isSearchVisible }) => {
                       const formattedDate = dayjs(date).format("YYYY-MM-DD");
                       field.onChange(formattedDate);
                     }}
-                    autoComplete="off"
                     dateFormat="yyyy-MM-dd"
+                    autoComplete="off"
                     placeholderText="From"
                     showPopperArrow={true}
                     className="!py-2 !px-3 !bg-[#FFFFFF26] !text-white !rounded-[7px] w-full"
@@ -347,10 +346,10 @@ const EventFilter = ({ search, isSearchVisible }) => {
                     minDate={
                       watch("date_from") ? new Date(watch("date_from")) : null
                     }
-                    autoComplete="off"
                     showPopperArrow={true}
                     className="!py-2 !px-3 !bg-[#FFFFFF26] !text-white !rounded-[7px] w-full"
                     wrapperClassName="w-full"
+                    autoComplete="off"
                     ariaLabelledBy="date-to-label"
                     popperPlacement="auto"
                     popperClassName="datepicker-right-popup"
@@ -454,49 +453,7 @@ const EventFilter = ({ search, isSearchVisible }) => {
             }}
           >
             <div className="flex items-center justify-between gap-4">
-              <div className="relative w-full">
-                <Select
-                  {...register("area")}
-                  className="!text-white !bg-[#FFFFFF26] transition-all w-full appearance-none !py-2 !px-2 !pr-6 !rounded-[7px] overflow-auto"
-                  // onChange={(e) => getAreaId(e.target.value)}
-                >
-                  <option className="text-black" value="">
-                    Select Area
-                  </option>
-                  {areaData?.map((item, i) => (
-                    <option className="text-black" key={i} value={item.name}>
-                      {item.name}
-                    </option>
-                  ))}
-                </Select>
-                <span className="absolute right-2 top-[14px] text-white">
-                  <GoChevronDown />
-                </span>
-              </div>
-
-              <div className="relative w-full">
-                <Select
-                  {...register("event_type")}
-                  className="!text-white !bg-[#FFFFFF26] transition-all w-full appearance-none !py-2 !px-2 !pr-6 !rounded-[7px] overflow-auto"
-                >
-                  <option className="text-black" value="">
-                    Event Type
-                  </option>
-                  <option value="trending-event" className="text-black">
-                    Trending Event
-                  </option>
-                  <option value="featured-event" className="text-black">
-                    Featured Event
-                  </option>
-                  <option value="upcoming-event" className="text-black">
-                    Upcoming Event
-                  </option>
-                </Select>
-                <span className="absolute right-2 top-[14px] text-white">
-                  <GoChevronDown />
-                </span>
-              </div>
-
+              {/* Area and Event Type removed */}
               <div className="relative w-full">
                 <Select
                   {...register("ticket_type_id")}
@@ -525,12 +482,12 @@ const EventFilter = ({ search, isSearchVisible }) => {
                 <Select
                   {...register("event_subcategory")}
                   className="!text-white !bg-[#FFFFFF26] transition-all w-full appearance-none !py-2 !px-2 !pr-6 !rounded-[7px] overflow-auto"
-                  // onChange={(e) => getSubCategoryId(e.target.value)}
+                  onChange={(e) => getSubCategoryId(e.target.value)}
                 >
                   <option className="text-black" value="">
                     Select Sub Category
                   </option>
-                  {eventFilteredItems.length ? (
+                  {watch("event_category_id") && watch("event_category_id") !== "all-events" && eventFilteredItems.length ? (
                     eventFilteredItems.map((item) => (
                       <option
                         className="text-black"
@@ -574,4 +531,4 @@ const EventFilter = ({ search, isSearchVisible }) => {
   );
 };
 
-export default EventFilter;
+export default CityFilter;

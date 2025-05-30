@@ -7,13 +7,7 @@ import "swiper/css/navigation";
 import Link from "next/link";
 import { FaArrowRight, FaArrowLeft } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-
-const Button = ({ children, variant, className, ...props }) => {
-  const baseStyles = "px-4 py-1.5 rounded-md";
-  const outlineStyles = "border border-[#ffffff26] text-white hover:bg-[#ffffff26]";
-  const styles = `${baseStyles} ${variant === "outline" ? outlineStyles : ""} ${className || ""}`;
-  return <button className={styles} {...props}>{children}</button>;
-};
+import Button from "../ui/Button";
 
 export default function UpcomingEvents() {
   const eventDetails = useSelector((state) => state.eventDetails?.data);
@@ -86,26 +80,26 @@ export default function UpcomingEvents() {
                     />
                     <div className="absolute bottom-0 left-0 w-full p-4 backdrop-blur-xl grid grid-cols-[auto_100px] justify-between items-start rounded-[15px] bg-[#e0dddd00] gap-x-2">
                       <div className="w-full">
-                        <div className="text-[20px] font-bold line-clamp-1 text-white">
+                        <div className="text-[20px] font-bold line-clamp-1 text-white __heading">
                           {event?.title}
                         </div>
                         <div className="flex items-center pr-2">
-                          <p className="line-clamp-1 text-white">
+                          <p className="line-clamp-1 text-white __text">
                             {event?.city_detail?.name},{" "}
                             <span>{event?.state_detail?.name}</span>{" "}
                           </p>
                           <span className="text-[#6e4938] mx-1">~</span>{" "}
-                          <div className="flex items-center gap-0.5 text-white">
+                          <div className="flex items-center gap-0.5 text-white __text">
                             <span>{event?.currency_detail?.currency}</span>
                             {Number(event?.event_min_price).toFixed(2)}
                           </div>
                         </div>
                       </div>
                       <div className="text-center backdrop-blur-sm text-[12px] rounded-[10px] overflow-hidden">
-                        <div className="backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white">
+                        <div className="backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white __text">
                           {formattedDate}
                         </div>
-                        <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e]">
+                        <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e] __text">
                           {formattedTime}
                         </div>
                       </div>

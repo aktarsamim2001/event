@@ -1,38 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { DayPicker } from "react-day-picker";
-import { isValid } from "date-fns";
-import { FaClock, FaUser, FaPhoneAlt, FaCalendar } from "react-icons/fa";
-import { IoIosArrowBack, IoMdMail } from "react-icons/io";
-import { BiSolidMessageSquare } from "react-icons/bi";
-import "react-day-picker/dist/style.css";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
+'use client'; // Mark as a Client Component due to client-side interactivity
+
+import { useEffect, useState } from 'react';
+import { DayPicker } from 'react-day-picker';
+import { isValid } from 'date-fns';
+import { FaClock, FaUser, FaPhoneAlt, FaCalendar } from 'react-icons/fa';
+import { IoIosArrowBack, IoMdMail } from 'react-icons/io';
+import { BiSolidMessageSquare } from 'react-icons/bi';
+import 'react-day-picker/dist/style.css';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
+import Link from 'next/link'; // Use Next.js Link instead of react-router-dom Link
+import { useDispatch, useSelector } from 'react-redux';
 import {
   submitConsultation,
   resetConsultation,
-} from "../../store/slice/consultation/consultationSlice";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+} from '../../store/slice/consultation/consultationSlice';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Utility to get local date at midnight
 function getLocalMidnightDate(date = new Date()) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
   return d;
-}
-
-// Utility to format 24-hour time string (e.g., "14:30:00") to 12-hour format (e.g., "2:30 PM")
-function formatTo12Hour(timeStr) {
-  if (!timeStr) return "";
-  const [hourStr, minuteStr] = timeStr.split(":");
-  let hour = parseInt(hourStr, 10);
-  const minute = minuteStr;
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12;
-  if (hour === 0) hour = 12;
-  return `${hour}:${minute} ${ampm}`;
 }
 
 function BookConsultation({ content }) {
@@ -48,12 +38,12 @@ function BookConsultation({ content }) {
 
   const [selectedTime, setSelectedTime] = useState(null);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: "",
+    name: '',
+    email: '',
+    phone: '',
+    message: '',
   });
-  const isLoading = consultationStatus === "loading";
+  const isLoading = consultationStatus === 'loading';
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
@@ -89,18 +79,22 @@ function BookConsultation({ content }) {
     }
   }, [selectedTime, errors.time]);
 
-  // Watch for submission status changes from Redux - with debug logs
+  // Watch for submission status changes from Redux
   useEffect(() => {
-    if (consultationStatus === "succeeded") {
+    if (consultationStatus === 'succeeded') {
       setIsSubmitted(true);
       setIsSubmitting(false);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    } else if (consultationStatus === "failed") {
+      toast.success(
+        data?.successMessage ||
+          'Your consultation request has been submitted successfully!'
+      );
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (consultationStatus === 'failed') {
       setIsSubmitting(false);
       if (consultationError) {
         setErrors((prev) => ({ ...prev, api: consultationError }));
         toast.error(consultationError);
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
   }, [consultationStatus, consultationError, data?.successMessage]);
@@ -109,28 +103,28 @@ function BookConsultation({ content }) {
     const newErrors = {};
 
     // Personal Information Validation
-    if (!formData.name.trim()) newErrors.name = "Name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    if (!formData.message.trim()) newErrors.message = "Description is required";
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) newErrors.email = 'Email is required';
+    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.message.trim()) newErrors.message = 'Description is required';
 
     // Email format validation with regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (formData.email && !emailRegex.test(formData.email)) {
-      newErrors.email = "Please enter a valid email address";
+      newErrors.email = 'Please enter a valid email address';
     }
 
     // Phone format validation (basic check)
     if (formData.phone && formData.phone.length < 10) {
       newErrors.phone =
-        "Please enter a valid phone number with at least 10 digits";
+        'Please enter a valid phone number with at least 10 digits';
     }
 
     // Date validation - must be selected and valid
     if (!selected) {
-      newErrors.date = "Please select a consultation date";
+      newErrors.date = 'Please select a consultation date';
     } else if (!isValid(selected)) {
-      newErrors.date = "Selected date is invalid";
+      newErrors.date = 'Selected date is invalid';
     } else {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -139,12 +133,12 @@ function BookConsultation({ content }) {
       selectedCopy.setHours(0, 0, 0, 0);
 
       if (selectedCopy < today) {
-        newErrors.date = "Cannot select a date in the past";
+        newErrors.date = 'Cannot select a date in the past';
       }
     }
     // Time validation - must be selected
-    if (!selectedTime || selectedTime.trim() === "") {
-      newErrors.time = "Please select a time slot";
+    if (!selectedTime || selectedTime.trim() === '') {
+      newErrors.time = 'Please select a time slot';
     }
 
     setErrors(newErrors);
@@ -152,16 +146,16 @@ function BookConsultation({ content }) {
   };
 
   const formatDateForServer = (date) => {
-    if (!date) return "";
+    if (!date) return '';
 
     try {
       const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
       return `${year}-${month}-${day}`;
     } catch (error) {
-      console.error("Error formatting date:", error);
-      return "";
+      console.error('Error formatting date:', error);
+      return '';
     }
   };
 
@@ -178,12 +172,12 @@ function BookConsultation({ content }) {
     if (!formattedDate) {
       setErrors((prev) => ({
         ...prev,
-        date: "Valid consultation date is required",
+        date: 'Valid consultation date is required',
       }));
       return;
     }
 
-    let formattedTime = "";
+    let formattedTime = '';
     if (selectedTime) {
       const timeParts = selectedTime.match(/(\d+):(\d+)\s(AM|PM)/);
       if (timeParts) {
@@ -191,12 +185,13 @@ function BookConsultation({ content }) {
         const minutes = timeParts[2];
         const period = timeParts[3];
 
-        if (period === "PM" && hours < 12) hours += 12;
-        if (period === "AM" && hours === 12) hours = 0;
+        if (period === 'PM' && hours < 12) hours += 12;
+        if (period === 'AM' && hours === 12) hours = 0;
 
-        formattedTime = `${hours.toString().padStart(2, "0")}:${minutes}`;
+        formattedTime = `${hours.toString().padStart(2, '0')}:${minutes}`;
       }
-    } // Get the selected slot from timeSlot.slots that matches the selectedTime label
+    }
+
     const selectedSlot = timeSlot?.slots.find((time) => {
       const slotLabel = `${formatTo12Hour(
         time.slot_start_time
@@ -217,24 +212,12 @@ function BookConsultation({ content }) {
 
     try {
       dispatch(submitConsultation(formPayload));
-
-      setTimeout(() => {
-        if (!isSubmitted) {
-          setIsSubmitted(true);
-          setIsSubmitting(false);
-          toast.success(
-            data?.successMessage ||
-              "Your consultation request has been submitted successfully!"
-          );
-          window.scrollTo({ top: 0, behavior: "smooth" });
-        }
-      }, 2000); // Wait 2 seconds for Redux to update, then force success if needed
     } catch (error) {
-      console.error("Error submitting consultation", error);
+      console.error('Error submitting consultation', error);
       setIsSubmitting(false);
       setErrors((prev) => ({
         ...prev,
-        api: error.message || "An unexpected error occurred",
+        api: error.message || 'An unexpected error occurred',
       }));
     }
   };
@@ -242,22 +225,22 @@ function BookConsultation({ content }) {
   const handleReset = () => {
     setIsSubmitted(false);
     setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
+      name: '',
+      email: '',
+      phone: '',
+      message: '',
     });
 
     const resetTomorrow = new Date();
     resetTomorrow.setDate(resetTomorrow.getDate() + 1);
     setSelected(resetTomorrow);
 
-    setSelectedTime("");
+    setSelectedTime('');
     setErrors({});
     dispatch(resetConsultation());
   };
 
-  if (isSubmitted || consultationStatus === "succeeded") {
+  if (isSubmitted || consultationStatus === 'succeeded') {
     return (
       <div className="bg-black relative">
         <div className="__container bg-black pt-[90px]">
@@ -281,10 +264,10 @@ function BookConsultation({ content }) {
 
               <h2 className="text-2xl font-bold text-white mb-3 __heading">
                 {data?.successMessage ||
-                  "Your consultation request has been submitted successfully!"}
+                  'Your consultation request has been submitted successfully!'}
               </h2>
               <Button
-                varient="fill"
+                variant="fill" // Changed varient to variant
                 onClick={handleReset}
                 className="inline-flex items-center gap-2"
               >
@@ -305,7 +288,7 @@ function BookConsultation({ content }) {
             <h2 className="text-xl md:text-2xl font-bold text-white __heading inline-flex pb-3 __position_border __heading_gap pr-2">
               {data?.title}
             </h2>
-            <p className="text-white md:text-center text-left __text">
+            <p className="text-white text-left __text">
               {data?.content}
             </p>
           </div>
@@ -336,9 +319,7 @@ function BookConsultation({ content }) {
                       placeholder="Your Name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`!pl-11 ${
-                        errors.name ? "border-red-500" : ""
-                      }`}
+                      className={`!pl-11 ${errors.name ? 'border-red-500' : ''}`}
                       required
                     />
                     {errors.name && (
@@ -353,15 +334,11 @@ function BookConsultation({ content }) {
                       placeholder="Email Address"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`!pl-11 ${
-                        errors.email ? "border-red-500" : ""
-                      }`}
+                      className={`!pl-11 ${errors.email ? 'border-red-500' : ''}`}
                       required
                     />
                     {errors.email && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.email}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1">{errors.email}</p>
                     )}
                   </div>
                   <div className="relative">
@@ -372,15 +349,11 @@ function BookConsultation({ content }) {
                       placeholder="Phone Number"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className={`!pl-11 ${
-                        errors.phone ? "border-red-500" : ""
-                      }`}
+                      className={`!pl-11 ${errors.phone ? 'border-red-500' : ''}`}
                       required
                     />
                     {errors.phone && (
-                      <p className="text-red-500 text-xs mt-1">
-                        {errors.phone}
-                      </p>
+                      <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
                     )}
                   </div>
                 </div>
@@ -408,7 +381,7 @@ function BookConsultation({ content }) {
             </div>
 
             {/* Right Column - Calendar & Time */}
-            <div className="space-y-4">
+          <div className="space-y-4">
               <div className="text-sm font-medium text-white mb-2 __text">
                 <FaCalendar className="inline-block w-4 h-4 mr-2 __accent_color" />
                 Select Date & Time
@@ -473,83 +446,74 @@ function BookConsultation({ content }) {
                     selected={selected}
                     onSelect={(date) => {
                       if (date) {
-                        setSelected(date);
+                        const normalized = new Date(date);
+                        normalized.setHours(0, 0, 0, 0);
+                        setSelected(normalized);
+                      } else {
+                        const fallback = getLocalMidnightDate(new Date(Date.now() + 24*60*60*1000));
+                        setSelected(fallback);
                       }
                     }}
-                    disabledDays={[
-                      {
-                        before: new Date(),
-                      },
-                    ]}
-                    components={{
-                      // Custom day rendering
-                      Day: ({ date, selected, disabled, onClick }) => {
-                        if (!date || !isValid(date)) return null;
-                        const isToday = date.getDate() === defaultDate.getDate() && date.getMonth() === defaultDate.getMonth() && date.getFullYear() === defaultDate.getFullYear();
-                        const isSelected = selected && isValid(selected) && date.getTime() === selected.getTime();
-                        const isDisabled = disabled || !isValid(date);
-
-                        return (
-                          <div
-                            onClick={isDisabled ? undefined : onClick}
-                            className={`${
-                              isSelected
-                                ? "bg-[#CD853F] text-white"
-                                : isToday
-                                ? "bg-[#22F106] bg-opacity-30"
-                                : "bg-transparent"
-                            } rounded-full w-10 h-10 flex items-center justify-center cursor-pointer transition-all duration-200 ${
-                              isDisabled ? "pointer-events-none opacity-50" : ""
-                            }`}
-                            title={isDisabled ? "Unavailable date" : ""}
-                          >
-                            {date.getDate()}
-                          </div>
-                        );
-                      },
+                    today={getLocalMidnightDate()}
+                    disabled={{
+                      before: (() => {
+                        const d = getLocalMidnightDate();
+                        d.setDate(d.getDate() - 1);
+                        return d;
+                      })(),
+                    }}
+                    className="book-consultation"
+                    classNames={{
+                      root: "text-white",
+                      day: "hover:bg-[#ffffff1b]",
+                      caption_label: "text-white font-semibold mb-3",
+                      nav: "absolute right-0 p-2 text-white",
+                      nav_button: "",
                     }}
                     modifiersStyles={{
-                      // Custom styles for modifiers
-                      today: {
-                        border: "2px solid #22F106",
-                        borderRadius: "50%",
-                      },
                       selected: {
-                        backgroundColor: "#CD853F",
+                        backgroundColor: "#1ABB00",
                         color: "white",
                         borderRadius: "50%",
-                      },
+                        fontSize: "15px",
+                      }
                     }}
                   />
                 </div>
               </div>
             </div>
-
-            {/* Submit Control */}
-            <div className="col-span-full mt-6">
-              <Button
-                type="submit"
-                varient="fill"
-                className="w-full py-4 text-lg font-semibold transition-all duration-200"
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? "Submitting..." : "Submit Consultation Request"}
-              </Button>
-            </div>
           </form>
 
-          {/* Back to Support Button - Positioned at the bottom right */}
-          <div className="absolute bottom-4 right-4">
-            <Button varient={"outline"} className={"!p-0 !rounded-[50%]"}>
+          {/* Submit Controls */}
+          <div className="flex justify-between items-center pb-4 px-4 md:px-8 md:pb-8 mt-10">
+            <Button variant="outline" className="!p-0 !rounded-[50%]">
               <Link href="/support" className="p-3 block">
                 <IoIosArrowBack className="w-5 h-5" />
               </Link>
+            </Button>
+            <Button
+              type="submit"
+              variant="fill" // Changed varient to variant
+              disabled={isLoading || isSubmitting}
+              onClick={handleSubmit}
+            >
+              {isLoading || isSubmitting ? 'Submitting...' : 'Submit Message'}
             </Button>
           </div>
         </div>
       </div>
     </div>
   );
+}
+
+function formatTo12Hour(time24) {
+  if (!time24) return '';
+  const [hourStr, minute] = time24.split(':');
+  let hour = parseInt(hourStr, 10);
+  const ampm = hour >= 12 ? 'PM' : 'AM';
+  hour = hour % 12;
+  if (hour === 0) hour = 12;
+  return `${hour.toString().padStart(2, '0')}:${minute} ${ampm}`;
 }
 
 export default BookConsultation;

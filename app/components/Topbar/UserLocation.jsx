@@ -67,7 +67,6 @@ export const getAddressFromGoogle = async () => {
     const coords = await getUserLocation();
     return await getAddressFromCoords(coords);
   } catch (error) {
-    console.error("Error getting address from Google:", error);
     throw error;
   }
 };
@@ -246,7 +245,7 @@ const UserLocation = () => {
       localStorage.setItem("userLocation", JSON.stringify(location));
       setIsOpen(false);
     } catch {
-      setErrorMessage("Failed to detect location.");
+      setErrorMessage("User denied Geolocation access");
     }
     setDetecting(false);
   };
@@ -278,13 +277,13 @@ const UserLocation = () => {
           />
           <button
             onClick={onDetectLocation}
-            className="mt-4 flex items-center gap-2 px-4 py-2 rounded bg-primary hover:bg-primary-dark text-white disabled:opacity-50"
+            className="text-white hover:text-[#22F106] flex items-center gap-2 cursor-pointer py-4 transition-colors"
             disabled={detecting}
           >
             {detecting ? <AiOutlineLoading3Quarters className="animate-spin" /> : <MdMyLocation />}
             Detect my location
           </button>
-          {errorMessage && <p className="mt-2 text-red-500">{errorMessage}</p>}
+          {errorMessage && <p className="text-red-500 italic">{errorMessage}</p>}
         </div>
       </Modal>
     </div>

@@ -13,6 +13,7 @@ import {
   getFilteredEvents,
   setFilterCurrentPage,
 } from "../../store/slice/eventFilter/eventFilterSlice";
+import Image from "next/image";
 
 function formatEventDate(dateStr) {
   if (!dateStr) return "";
@@ -127,7 +128,7 @@ const EventCard = ({
         <h2 className="text-2xl md:text-4xl mb-6 font-bold text-white leading-tight __heading">
           {cta?.title}
         </h2>
-        <Button varient={"fill"}>
+        <Button variant={"fill"}>
           <Link
             target="_blank"
             href={cta?.button_url}
@@ -152,11 +153,15 @@ const EventCard = ({
         viewMode === "grid" ? (
           <div key={event.id} className="flex flex-col">
             <div className="overflow-hidden rounded-[16px] __gradient flex flex-col h-full">
-              <div className="relative h-[180px]">
-                <img
+              <div className="relative h-[160px]">
+                <Image
                   src={event.feature_image}
                   alt={event.title}
+                  width={400}
+                  height={200}
                   className="object-cover w-full h-full"
+                  loading="lazy"
+                  style={{ width: "100%", height: "auto", aspectRatio: "400/210" }}
                 />
               </div>
               <div className="px-4 py-4 flex flex-col flex-grow">
@@ -198,7 +203,7 @@ const EventCard = ({
                     // onClick={() => handleNavigation(`/event-details/${event.slug}`)}
                   >
                     <Button
-                      varient={"outline"}
+                      variant={"outline"}
                       className="!text-[12px] !py-1.5 !px-[18px]"
                     >
                       View Details
@@ -212,10 +217,14 @@ const EventCard = ({
           <div key={event.id}>
             <div className="overflow-hidden rounded-2xl __gradient grid grid-cols-1 lg:grid-cols-[300px_auto] xl:grid-cols-[350px_auto]">
               <div className="relative h-full lg:h-auto">
-                <img
+                <Image
                   src={event.feature_image}
                   alt={event.title}
-                  className="block w-full h-[200px] object-cover"
+                  height={230}
+                  width={400}
+                  className="block w-full object-cover"
+                  loading="lazy"
+                  style={{ width: "100%", height: "auto", aspectRatio: "400/230" }}
                 />
               </div>
               <div className="px-4 py-4">
@@ -256,7 +265,7 @@ const EventCard = ({
                     href={`/event-details/${event.slug}`}
                     // onClick={() => handleNavigation(`/event-details/${event.slug}`)}
                   >
-                    <Button varient={"outline"} className="!text-[14px] !py-2">
+                    <Button variant={"outline"} className="!text-[14px] !py-2">
                       View Details
                     </Button>
                   </Link>
@@ -360,7 +369,7 @@ const EventCard = ({
                 aria-label="Pagination"
               >
                 <Button
-                  varient={"fill"}
+                  variant={"fill"}
                   className="!px-3 !py-1"
                   disabled={eventPaginationInfo.currentPage === 1}
                   onClick={() =>
@@ -373,7 +382,7 @@ const EventCard = ({
                   { length: eventPaginationInfo.totalPages },
                   (_, i) => (
                     <Button
-                      varient={
+                      variant={
                         eventPaginationInfo.currentPage === i + 1
                           ? "fill"
                           : "outline"
@@ -392,7 +401,7 @@ const EventCard = ({
                   )
                 )}
                 <Button
-                  varient={"fill"}
+                  variant={"fill"}
                   className="!px-3 !py-1"
                   disabled={
                     eventPaginationInfo.currentPage ===

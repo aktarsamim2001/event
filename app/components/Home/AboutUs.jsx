@@ -27,18 +27,19 @@ const AboutUs = ({ className, data }) => {
             >
               {data[0]?.sliders?.map((item, _id) => (
                 <SwiperSlide key={_id}>
-                  <div className="bg-black about_swiper_img relative">
+                  <div className="bg-black about_swiper_img relative min-h-[350px] md:min-h-[500px]">
                     <Image
                       src={item?.image}
                       alt="about rally-up swiper"
                       fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       className="block w-full h-full object-cover"
-                      priority
+                      priority={_id === 0}
                     />
                     <div className="flex justify-center items-center">
                       <Button
                         className="absolute left-auto right-auto bottom-5 md:bottom-8 z-100 block object-cover !px-4 !py-2 rounded-full text-sm md:text-lg"
-                        varient="fill"
+                        variant="fill"
                       >
                         <Link href={item?.button_url}>{item?.button}</Link>
                       </Button>

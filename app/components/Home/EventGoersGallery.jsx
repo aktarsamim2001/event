@@ -52,13 +52,16 @@ const EventGoersGallery = ({ className }) => {
             onClick={() => handleViewAll(item.id)}
             className="Gmain_backdrop relative cursor-pointer overflow-hidden transform transition-transform duration-300"
           >
-            <Image
-              src={item?.backgorund_image}
-              alt={item?.title}
-              layout="fill"
-              objectFit="cover"
-              className="transition-opacity duration-300"
-            />
+            <div className="relative w-full h-[280px]">
+              <Image
+                src={item?.backgorund_image}
+                alt={item?.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className=" object-cover"
+                loading="lazy"
+              />
+            </div>
             <div className="absolute left-0 bottom-0 w-full px-2.5 py-3 bg-black/70 backdrop-blur-sm">
               <div className="text-lg md:text-xl lg:text-2xl truncate font-semibold __heading text-white">
                 {item?.title}

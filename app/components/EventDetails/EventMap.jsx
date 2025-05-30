@@ -80,7 +80,7 @@ function EventMap({ aboutEvent }) {
           
           <Button 
             onClick={openDirections}
-            varient={"fill"}
+            variant={"fill"}
             className="flex items-center justify-center rounded-2xl w-full cursor-pointer hover:!text-black !py-1.5 !px-4 transition duration-200"
           >
             <span className="flex items-center __text">

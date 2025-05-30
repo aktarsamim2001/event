@@ -1,21 +1,14 @@
 "use client";
 
 import React from "react";
-import { CiCalendar } from "react-icons/ci";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation } from "swiper/modules";
+import { Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import Link from "next/link";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-
-const Button = ({ children, variant, className, ...props }) => {
-  const baseStyles = "px-3 py-1.5 rounded-md";
-  const outlineStyles = "border border-[#ffffff26] text-white hover:bg-[#ffffff26]";
-  const styles = `${baseStyles} ${variant === "outline" ? outlineStyles : ""} ${className || ""}`;
-  return <button className={styles} {...props}>{children}</button>;
-};
+import Button from "../ui/Button";
 
 export default function OthersEvent() {
   const eventDetails = useSelector((state) => state.eventDetails?.data);
@@ -24,7 +17,7 @@ export default function OthersEvent() {
     <div>
       {/* Section Header */}
       <div className="grid grid-cols-[auto_95px] justify-between items-center">
-        <h2 className="text-[18px] md:text-[25px] font-bold text-white leading-tight mb-4">
+        <h2 className="text-[18px] md:text-[25px] font-bold text-white __heading leading-tight mb-4">
           Other Events
         </h2>
         <div className="flex justify-end items-center mb-2.5">
@@ -45,11 +38,11 @@ export default function OthersEvent() {
 
       <div>
         <Swiper
-          modules={[Navigation, Autoplay]}
+          modules={[Navigation]}
           spaceBetween={10}
           slidesPerView={1}
           speed={1000}
-          autoplay={{ delay: 5000, disableOnInteraction: false }}
+          // autoplay={{ delay: 5000, disableOnInteraction: false }}
           loop={true}
           breakpoints={{
             640: { slidesPerView: 1 },
@@ -89,32 +82,32 @@ export default function OthersEvent() {
                       className="block w-full object-cover h-[300px] -mt-1"
                     />
                     <div className="absolute top-3 right-3 text-center backdrop-blur-sm text-[14px] rounded-[10px] overflow-hidden">
-                      <div className="backdrop-blur-md bg-[#302d2d34] p-1.5 px-3.5 font-semibold text-nowrap text-white">
+                      <div className="backdrop-blur-md bg-[#302d2d34] p-1.5 px-3.5 font-semibold text-nowrap __text text-white">
                         Upcoming
                       </div>
                     </div>
                     <div className="absolute bg-black/35 bottom-0 left-0 w-full p-4 backdrop-blur-md grid grid-cols-[auto_100px] justify-between items-start rounded-[15px] gap-x-2">
                       <div className="w-full">
-                        <div className="text-[20px] font-bold line-clamp-1 text-white">
+                        <div className="text-[20px] font-bold line-clamp-1 text-white __heading">
                           {event?.title}
                         </div>
                         <div className="flex items-center pr-2">
-                          <p className="line-clamp-1 text-white">
+                          <p className="line-clamp-1 text-white __text">
                             {event?.city_detail?.name},{" "}
                             <span>{event?.state_detail?.name}</span>{" "}
                           </p>
                           <span className="text-[#6e4938] mx-1">~</span>{" "}
-                          <div className="flex items-center gap-0.5 text-white">
+                          <div className="flex items-center gap-0.5 text-white __text">
                             <span>{event?.currency_detail?.currency}</span>
                             {formattedPrice}
                           </div>
                         </div>
                       </div>
                       <div className="text-center backdrop-blur-sm text-[12px] rounded-[10px] overflow-hidden">
-                        <div className="backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white">
+                        <div className="backdrop-blur-md bg-[#f1eded34] p-1 px-2 text-nowrap text-white __text">
                           {formattedDate}
                         </div>
-                        <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e]">
+                        <div className="text-white p-1 text-nowrap bg-[#d0cbcb1e] __text">
                           {formattedTime}
                         </div>
                       </div>

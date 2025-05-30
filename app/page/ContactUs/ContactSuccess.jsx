@@ -28,7 +28,7 @@ const ContactSuccess = () => {
             {message}
           </h2>
           <Button
-            varient={"fill"}
+            variant={"fill"}
             onClick={onReset}
             className="inline-flex items-center gap-2"
           >

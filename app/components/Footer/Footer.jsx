@@ -93,7 +93,7 @@ const Footer = () => {
                 {featureStatus?.flash_data?.section_content}
               </p>
               <Button
-                varient="fill"
+                variant="fill"
                 className="!px-5 !py-2 text-sm w-fit whitespace-nowrap"
                 onClick={() => {
                   if (featureStatus?.flash_data?.section_button_url) {
@@ -230,7 +230,7 @@ const Footer = () => {
                     />
                     <Button
                       type="submit"
-                      varient="fill"
+                      variant="fill"
                       disabled={isSubmitting}
                       className="absolute right-1 top-1/2 -translate-y-1/2 !py-2.5 !px-5"
                     >

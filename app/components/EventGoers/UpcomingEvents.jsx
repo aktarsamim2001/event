@@ -2,9 +2,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
-import { CiCalendar } from "react-icons/ci";
+
 
 const UpcomingEvents = ({ event }) => {
   const isVisible = event?.visibility === "1";

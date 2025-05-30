@@ -31,7 +31,13 @@ const Sidebar = () => {
     >
       <div className="sidebar-content">
         <div className="flex justify-between items-center">
-          <Image src={logo} className="block w-15 object-cover" alt="logo" />
+          <Image
+            src={logo}
+            className="block w-15 object-cover"
+            alt="logo"
+            width={120}
+            height={40}
+          />
           <span
             className="bg-[#ffffff22] p-[6px] rounded-md backdrop:blur-[3px] __primaryColor_hov text-white"
             onClick={handleClose}

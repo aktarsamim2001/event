@@ -52,12 +52,13 @@ const AppPromotion = ({ appPromotion }) => {
                           src={item.image}
                           alt={item.title}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover h-full w-full"
                           priority
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent backdrop-blur-sm p-3.5">
-                          <h4 className="text-white font-semibold">{item.title}</h4>
-                          <p className="text-white/80 text-sm">{item.content}</p>
+                          <h4 className="text-white font-semibold __heading">{item.title}</h4>
+                          <p className="text-white/80 text-sm __text">{item.content}</p>
                         </div>
                       </div>
                     </SwiperSlide>

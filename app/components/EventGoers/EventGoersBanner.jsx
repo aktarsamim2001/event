@@ -10,7 +10,7 @@ function EventGoersBanner({ className,cta }) {
       <h2 className="text-2xl md:text-4xl font-bold text-white leading-tight __heading __heading_gap mb-6">
       {cta.title}
       </h2>
-      <Button varient={"fill"}>
+      <Button variant={"fill"}>
         <Link target='_blank' href={cta.button_url}>{cta.button}</Link>
       </Button>
     </div>

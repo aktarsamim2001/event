@@ -104,7 +104,7 @@ const ShareModal = ({ isOpen, onClose, title, url }) => {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl text-white font-semibold __heading">Share: {title}</h2>
+          <h2 className="text-xl text-white font-semibold __heading">{title}</h2>
           <button
             onClick={onClose}
             className="text-gray-200 hover:text-gray-900 cursor-pointer transition-colors p-1 rounded-full hover:bg-gray-100"

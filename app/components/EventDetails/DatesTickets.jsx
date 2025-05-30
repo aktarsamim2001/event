@@ -79,7 +79,7 @@ export default function DatesTickets() {
         }}
       >
         <SwiperSlide className="flex-1 flex justify-center shrink w-full">
-          <Button varient={"fill"} className="!px-6 !py-2 text-center">
+          <Button variant={"fill"} className="!px-6 !py-2 text-center">
             <div className="text-sm font-medium">
               {formatDate(eventInfo.event_date).split(",")[0]},{" "}
               {formatDate(eventInfo.event_date).split(",")[1]} –{" "}

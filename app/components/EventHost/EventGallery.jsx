@@ -90,7 +90,7 @@ const EventGallery = ({ className, eventGallery }) => {
       <div className="gallery_grid">
         {eventGallery[0]?.images.map((item, index) => (
           <div key={index} className="Gmain_backdrop border-2 border-gray-500" onClick={() => openLightbox(index)}>
-            <Image src={item} alt={`gallery img ${index}`} />
+            <Image src={item} alt={`gallery img ${index}`} width={400} height={300} className="block w-full h-auto object-cover" />
           </div>
         ))}
       </div>

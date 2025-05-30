@@ -137,11 +137,11 @@ export default function EventSponsors() {
       )}
 
       <div className="pt-4 flex flex-col md:flex-row lg:flex-col xl:flex-row items-center justify-between gap-1.5 border-t border-[#FFE100]/40">
-        <Button varient={"fill"} className="w-full !py-2 !px-1.5">
+        <Button variant={"fill"} className="w-full !py-2 !px-1.5">
           Request to Join
         </Button>
         <Button
-          varient={"outline"}
+          variant={"outline"}
           className="w-full flex items-center justify-center gap-5 !py-2 !px-1"
           onClick={() => setShowShareModal(true)}
         >

@@ -97,7 +97,7 @@ const ContactForm = ({
             <h2 className="text-2xl font-bold text-white mb-3 __heading">{successMessage}</h2>
   
             <Button
-              varient="fill"
+              variant="fill"
               onClick={() => {
                 setFormData(initialFormState);
                 onReset();
@@ -189,29 +189,29 @@ const ContactForm = ({
               </span>
               {formErrors.reason && <p className="text-red-400 text-sm mt-1">{formErrors.reason}</p>}
             </div>
+          </div>
 
-            <div>
+          <div>
             <textarea
               name="message"
               value={formData.message}
               onChange={handleChange}
               placeholder="Type Your Message"
               rows={4}
-              className="col-span-2 px-3 py-[14px] rounded-xl w-full block outline-none bg-[#ffffff1b] text-white pl-[25px] border custom_input_component"
+              className="px-3 py-[14px] rounded-xl w-full block outline-none bg-[#ffffff1b] text-white pl-[25px] border custom_input_component"
             ></textarea>
-             {formErrors.message && <p className="text-red-400 text-sm mt-1">{formErrors.message}</p>}
-            </div>
+            {formErrors.message && <p className="text-red-400 text-sm mt-1">{formErrors.message}</p>}
           </div>
 
           <div className="flex justify-between items-center mt-6">
-            <Button type="button" varient="outline" className="!p-0 !rounded-[50%]">
+            <Button type="button" variant="outline" className="!p-0 !rounded-[50%]">
               <Link href="/support" className="p-3 block">
                 <IoIosArrowBack className="w-5 h-5" />
               </Link>
             </Button>
 
             {button && (
-              <Button type="submit" varient="fill" className="inline-flex items-center gap-2" disabled={isLoading}>
+              <Button type="submit" variant="fill" className="inline-flex items-center gap-2" disabled={isLoading}>
                 {isLoading ? "Submitting..." : button}
               </Button>
             )}

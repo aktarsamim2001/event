@@ -345,7 +345,7 @@ const Contact = ({ content }) => {
               </div>
 
               <div className="flex justify-center pt-7">
-                <Button varient={"fill"} type="submit" disabled={isLoading}>
+                <Button variant={"fill"} type="submit" disabled={isLoading}>
                   {isLoading ? "Submitting..." : "Submit Message"}
                 </Button>
               </div>
