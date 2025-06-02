@@ -1,15 +1,22 @@
-
 import PropularCity from "../../page/PropularCity/PropularCity.jsx";
+import MetaScripts from "../../components/MetaScript/MetaScripts";
 
 export async function generateMetadata({ params }) {
   const awaitedParams = await params;
-  const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
+  const slug = awaitedParams?.slug
+    ? Array.isArray(awaitedParams.slug)
+      ? awaitedParams.slug[0]
+      : awaitedParams.slug
+    : "home";
 
   const rootUrl = process.env.NEXT_PUBLIC_BASE_URL;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://rallyup.in";
 
   try {
-    const res = await fetch(`${rootUrl}/api/web/events/list?city_slug=${slug}`, { cache: "no-store" });
+    const res = await fetch(
+      `${rootUrl}/api/web/events/list?city_slug=${slug}`,
+      { cache: "no-store" }
+    );
     const apiData = await res.json();
     const meta = apiData?.city || {};
 
@@ -18,17 +25,23 @@ export async function generateMetadata({ params }) {
     const featureImage = meta.meta_feature_image
       ? meta.meta_feature_image.startsWith("http")
         ? meta.meta_feature_image
-        : `${siteUrl}${meta.meta_feature_image.startsWith("/") ? "" : "/"}${meta.meta_feature_image}`
+        : `${siteUrl}${meta.meta_feature_image.startsWith("/") ? "" : "/"}${
+            meta.meta_feature_image
+          }`
       : `${siteUrl}/default-og-image.jpg`;
 
     return {
       title: meta.meta_title || `RallyUp - ${slug}`,
-      description: meta.meta_description || "Find local events and things to do in your city.",
+      description:
+        meta.meta_description ||
+        "Find local events and things to do in your city.",
       keywords: meta.meta_keywords || undefined,
       authors: meta.meta_author ? [{ name: meta.meta_author }] : undefined,
       openGraph: {
         title: meta.meta_title || `RallyUp - ${slug}`,
-        description: meta.meta_description || "Find local events and things to do in your city.",
+        description:
+          meta.meta_description ||
+          "Find local events and things to do in your city.",
         url: `${siteUrl}/${slug === "home" ? "" : slug}`,
         type: "website",
         images: [
@@ -43,7 +56,9 @@ export async function generateMetadata({ params }) {
       twitter: {
         card: "summary_large_image",
         title: meta.meta_title || `RallyUp - ${slug}`,
-        description: meta.meta_description || "Find local events and things to do in your city.",
+        description:
+          meta.meta_description ||
+          "Find local events and things to do in your city.",
         images: [featureImage],
       },
     };
@@ -80,6 +95,15 @@ export async function generateMetadata({ params }) {
 
 export default async function Page({ params }) {
   const awaitedParams = await params;
-  const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
-  return <PropularCity slug={slug} />;
+  const slug = awaitedParams?.slug
+    ? Array.isArray(awaitedParams.slug)
+      ? awaitedParams.slug[0]
+      : awaitedParams.slug
+    : "home";
+  return (
+    <>
+      <MetaScripts />
+      <PropularCity slug={slug} />
+    </>
+  );
 }

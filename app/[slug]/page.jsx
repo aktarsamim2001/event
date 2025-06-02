@@ -1,5 +1,5 @@
 import DynamicPage from "./DynamicPage";
-import MetaScripts from "./MetaScripts";
+import MetaScripts from "../components/MetaScript/MetaScripts";
 
 export async function generateMetadata({ params }) {
   // Await params if it's a Promise (Next.js 14+ streaming routes)

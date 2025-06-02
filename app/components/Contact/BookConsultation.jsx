@@ -1,4 +1,4 @@
-'use client'; // Mark as a Client Component due to client-side interactivity
+'use client'; 
 
 import { useEffect, useState } from 'react';
 import { DayPicker } from 'react-day-picker';
@@ -9,7 +9,7 @@ import { BiSolidMessageSquare } from 'react-icons/bi';
 import 'react-day-picker/dist/style.css';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
-import Link from 'next/link'; // Use Next.js Link instead of react-router-dom Link
+import Link from 'next/link';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   submitConsultation,
@@ -18,7 +18,6 @@ import {
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-// Utility to get local date at midnight
 function getLocalMidnightDate(date = new Date()) {
   const d = new Date(date);
   d.setHours(0, 0, 0, 0);
@@ -32,7 +31,6 @@ function BookConsultation({ content }) {
   const consultationStatus = useSelector((state) => state.consultation.status);
   const consultationError = useSelector((state) => state.consultation.error);
 
-  // Explicit date initialization - set today's date
   const defaultDate = getLocalMidnightDate();
   const [selected, setSelected] = useState(defaultDate);
 
@@ -52,40 +50,34 @@ function BookConsultation({ content }) {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
 
-    // Clear error when field is edited
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: null }));
     }
   };
 
-  // Clean up when component unmounts
   useEffect(() => {
     return () => {
       dispatch(resetConsultation());
     };
   }, [dispatch]);
 
-  // Clear date error when date is selected
   useEffect(() => {
     if (selected && errors.date) {
       setErrors((prev) => ({ ...prev, date: null }));
     }
   }, [selected, errors.date]);
 
-  // Clear time error when time is selected
   useEffect(() => {
     if (selectedTime && errors.time) {
       setErrors((prev) => ({ ...prev, time: null }));
     }
   }, [selectedTime, errors.time]);
 
-  // Watch for submission status changes from Redux
   useEffect(() => {
     if (consultationStatus === 'succeeded') {
       setIsSubmitted(true);
       setIsSubmitting(false);
-      setErrors({}); // Clear errors on success
-      // Remove toast here to avoid double rendering issues
+      setErrors({});
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (consultationStatus === 'failed') {
       setIsSubmitting(false);
@@ -227,6 +219,7 @@ function BookConsultation({ content }) {
       consultation_time: selectedTime, // Send the AM/PM label directly
     };
 
+    console.log('Submitting formPayload:', formPayload);
     setIsSubmitting(true);
 
     try {

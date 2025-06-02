@@ -13,7 +13,7 @@ import Button from "../../components/ui/Button";
 import Select from "../../components/ui/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGeneralSettings } from "../../store/slice/settings/generalSettingsSlice";
-import { resetCallRequest, setCallData, setCallError, setCallLoading } from "../../store/slice/callRequest/callRequestSlice";
+import { resetCallRequest, setCallData, setCallError, setCallLoading, submitCallRequest } from "../../store/slice/callRequest/callRequestSlice";
 
 const Contact = ({ content }) => {
   const option = content?.support_page?.reasons || [];
@@ -75,6 +75,11 @@ const Contact = ({ content }) => {
     if (!formData.reasons) errors.reasons = "Please select a query type";
     if (!formData.message.trim()) errors.message = "Message is required";
 
+    // Ensure reasons is a valid option
+  if (formData.reasons && !option?.some(opt => opt.name === formData.reasons && opt.status === 'Show')) {
+    errors.reasons = 'Please select a valid query type';
+  }
+
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -108,10 +113,10 @@ const Contact = ({ content }) => {
       // Simulate async call, replace with actual API call if needed
       setTimeout(() => {
         // Simulate success
-        dispatch(setCallData(payload));
+        // dispatch(setCallData(payload));
+        dispatch(submitCallRequest(payload));
         dispatch(setCallLoading(false));
       }, 1000);
-      // If you want to use the real async thunk, replace above with:
       // dispatch(submitCallRequest(payload));
     } else {
       toast.error("Form validation failed. Please check your input.");
@@ -126,7 +131,6 @@ const Contact = ({ content }) => {
   return (
     <div className="bg-black">
       <PageBanner title={breadcrumb?.title} subtitle={breadcrumb?.content} />
-
       <div className="__responsive_gap">
         <div className="__container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
