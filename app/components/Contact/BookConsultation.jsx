@@ -84,10 +84,8 @@ function BookConsultation({ content }) {
     if (consultationStatus === 'succeeded') {
       setIsSubmitted(true);
       setIsSubmitting(false);
-      toast.success(
-        data?.successMessage ||
-          'Your consultation request has been submitted successfully!'
-      );
+      setErrors({}); // Clear errors on success
+      // Remove toast here to avoid double rendering issues
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (consultationStatus === 'failed') {
       setIsSubmitting(false);
@@ -97,7 +95,28 @@ function BookConsultation({ content }) {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     }
-  }, [consultationStatus, consultationError, data?.successMessage]);
+    // If status is idle, reset isSubmitting
+    if (consultationStatus === 'idle') {
+      setIsSubmitting(false);
+    }
+  }, [consultationStatus, consultationError]);
+
+  // Show toast only when isSubmitted changes to true
+  useEffect(() => {
+    if (isSubmitted) {
+      toast.success(
+        data?.successMessage ||
+          'Your consultation request has been submitted successfully!'
+      );
+    }
+  }, [isSubmitted, data?.successMessage]);
+
+  // Ensure local isSubmitted is false when redux status is reset
+  useEffect(() => {
+    if (consultationStatus === 'idle' && isSubmitted) {
+      setIsSubmitted(false);
+    }
+  }, [consultationStatus, isSubmitted]);
 
   const validateForm = () => {
     const newErrors = {};

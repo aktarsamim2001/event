@@ -2,7 +2,6 @@
 import PropularCity from "../../page/PropularCity/PropularCity.jsx";
 
 export async function generateMetadata({ params }) {
-  // Await params to resolve the Promise
   const awaitedParams = await params;
   const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
 
@@ -14,10 +13,8 @@ export async function generateMetadata({ params }) {
     const apiData = await res.json();
     const meta = apiData?.city || {};
 
-    // Log metadata for debugging
     console.log("Meta Data:", meta);
 
-    // Ensure image URL is absolute
     const featureImage = meta.meta_feature_image
       ? meta.meta_feature_image.startsWith("http")
         ? meta.meta_feature_image
@@ -52,7 +49,6 @@ export async function generateMetadata({ params }) {
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
-    // Fallback metadata
     return {
       title: `RallyUp - ${slug}`,
       description: "Find local events and things to do in your city.",
@@ -83,7 +79,6 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function Page({ params }) {
-  // Await params to resolve the Promise
   const awaitedParams = await params;
   const slug = awaitedParams?.slug ? (Array.isArray(awaitedParams.slug) ? awaitedParams.slug[0] : awaitedParams.slug) : "home";
   return <PropularCity slug={slug} />;

@@ -5,6 +5,8 @@ import Header from "./components/Topbar/Header";
 import Navbar from "./components/Topbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import React from "react";
+import ScrollToTop from "../components/ui/ScrollToTop";
+import AppScrollWrapper from "../components/ui/AppScrollWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,10 +29,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
+          <AppScrollWrapper>
           <Header />
           <Navbar />
-          {children}
+            <ScrollToTop>{children}</ScrollToTop>
           <Footer />
+          </AppScrollWrapper>
         </Providers>
       </body>
     </html>

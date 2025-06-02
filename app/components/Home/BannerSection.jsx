@@ -152,38 +152,39 @@ const BannerSection = ({ bannerData }) => {
             >
               {images.map((image, index) => (
                 <SwiperSlide key={index}>
-                  <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                  <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden" style={{ width: "auto", height: "auto" }}>
                     <Image
                       src={image}
                       alt={`Event ${index + 1}`}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      className="w-full h-full object-cover"
+                      className="object-cover"
                       priority
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-                  </div>
+
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                </div>
                 </SwiperSlide>
               ))}
-            </Swiper>
+          </Swiper>
 
-            <div className="absolute hidden -right-7 top-1/2 -translate-y-1/2 md:flex flex-col gap-3">
-              {images.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => swiperInstance?.slideToLoop(index)}
-                  className={`w-3 h-3 rounded-full transition-all cursor-pointer ${
-                    activeIndex === index
-                      ? "bg-white scale-110 h-7"
-                      : "__accent_bg"
+          <div className="absolute hidden -right-7 top-1/2 -translate-y-1/2 md:flex flex-col gap-3">
+            {images.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => swiperInstance?.slideToLoop(index)}
+                className={`w-3 h-3 rounded-full transition-all cursor-pointer ${activeIndex === index
+                    ? "bg-white scale-110 h-7"
+                    : "__accent_bg"
                   }`}
-                />
-              ))}
-            </div>
+              />
+            ))}
           </div>
         </div>
       </div>
     </div>
+    </div >
   );
 };
 

@@ -1,12 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import EventCard from "../../components/Events/EventCard";
 import EventBanner from "../../components/Events/EventBanner";
 import CityFilter from "../../components/CityEvent/CityFilter";
 import CityEventCard from "../../components/CityEvent/CityEventCard";
-import { useDispatch, useSelector } from "react-redux";
-import { getFilteredEvents } from "../../store/slice/eventFilterSlice";
 
 const PropularCity = ({ content, slug }) => {
   const eventData = content?.event_page;

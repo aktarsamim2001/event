@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { GoChevronDown } from "react-icons/go";
@@ -18,7 +16,7 @@ import {
   setFilterFormValues,
 } from "../../store/slice/eventFilter/eventFilterSlice";
 import { useForm, Controller } from "react-hook-form";
-import { data, useSearchParams } from "next/navigation";
+import { data, useSearchParams, useRouter } from "next/navigation";
 import dayjs from "dayjs";
 
 const datePickerStyles =`
@@ -125,10 +123,12 @@ const CityFilter = ({ search, isSearchVisible }) => {
   const { data: areaData } = useSelector((state) => state.areas);
   const { data: ticketTypeData } = useSelector((state) => state.ticketTypes);
 
-  const [width, setWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [width, setWidth] = useState(1024); // default width for SSR
   const [expand, setExpand] = useState(false);
   const [eventFilteredItems, setEventFilteredItems] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  // Use Next.js useSearchParams (read-only)
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const [formValues, setFormValues] = useState({});
   const [categoryName, setCategoryName] = useState();
   const { register, handleSubmit, control, setValue, reset,watch } = useForm({
@@ -137,21 +137,19 @@ const CityFilter = ({ search, isSearchVisible }) => {
     // },
   });
 
+  // Only access localStorage on client
   useEffect(() => {
-    setFormValues(JSON.parse(localStorage.getItem("filterFormValues")));
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("filterFormValues");
+      setFormValues(stored ? JSON.parse(stored) : {});
+    }
   }, [searchParams]);
 
   useEffect(() => {
     dispatch(fetchAreas());
     dispatch(fetchTicketTypes());
-    dispatch(getEventFilterData);
+    dispatch(getEventFilterData()); // <-- FIX: call as function
   }, [dispatch]);
-
-  useEffect(() => {
-    const handleResize = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   const toggleExpand = () => setExpand(!expand);
 
@@ -173,14 +171,16 @@ const CityFilter = ({ search, isSearchVisible }) => {
   }, [eventFilterData]);
 
   const onSubmit = async (data) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    let city_slug = urlParams.get("city_slug");
-    if (!city_slug) {
-      const pathParts = window.location.pathname.split("/").filter(Boolean);
-      city_slug = pathParts.includes("city") ? pathParts[pathParts.indexOf("city") + 1] : undefined;
+    let city_slug;
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      city_slug = urlParams.get("city_slug");
+      if (!city_slug) {
+        const pathParts = window.location.pathname.split("/").filter(Boolean);
+        city_slug = pathParts.includes("city") ? pathParts[pathParts.indexOf("city") + 1] : undefined;
+      }
+      localStorage.setItem("filterFormValues", JSON.stringify(data));
     }
-
-    localStorage.setItem("filterFormValues", JSON.stringify(data));
 
     const selectedCategory = eventFilterData.find(
       (item) => item.id === data.event_category_id
@@ -221,8 +221,8 @@ const CityFilter = ({ search, isSearchVisible }) => {
         newParams.set(key, value);
       }
     });
-
-    setSearchParams(newParams);
+    // Use router.replace instead of window.history.replaceState
+    router.replace(`?${newParams.toString()}`);
   };
 
   const handleReset = () => {
@@ -237,20 +237,25 @@ const CityFilter = ({ search, isSearchVisible }) => {
       event_subcategory: "",
     });
     setEventFilteredItems([]);
-    setSearchParams("");
-    localStorage.removeItem("filterFormValues");
+    if (typeof window !== "undefined") {
+      window.history.replaceState(null, '', window.location.pathname);
+      localStorage.removeItem("filterFormValues");
+    }
     setEventFilteredItems(
       eventFilterData.flatMap((item) => item.children || [])
     );
   };
 
   useEffect(() => {
-    const getFormdata = JSON.parse(localStorage.getItem("filterFormValues"));
-    const urlParams = new URLSearchParams(window.location.search);
+    let getFormdata = {};
+    if (typeof window !== "undefined") {
+      getFormdata = JSON.parse(localStorage.getItem("filterFormValues"));
+    }
+    const urlParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
 
     const formValues = {
       date_from: urlParams.get("date_from") || getFormdata?.date_from || null,
-      date_to: urlParams.get("date_from") || getFormdata?.date_to || null,
+      date_to: urlParams.get("date_to") || getFormdata?.date_to || null,
       event_category_id:
         urlParams.get("event_category_id") ||
         getFormdata?.event_category_id ||
@@ -283,7 +288,10 @@ const CityFilter = ({ search, isSearchVisible }) => {
   return (
     <div className="__container __responsive_gap">
       <style>{datePickerStyles}</style>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {(!Array.isArray(eventFilterData) || eventFilterData.length === 0) ? (
+        null
+      ) : (
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div>
             <div className="text-[clamp(32px,_6vw,_45px)] __heading leading-tight">
               Discover Amazing Events
@@ -458,7 +466,6 @@ const CityFilter = ({ search, isSearchVisible }) => {
                 <Select
                   {...register("ticket_type_id")}
                   className="!text-white !bg-[#FFFFFF26] transition-all w-full appearance-none !py-2 !px-2 !pr-6 !rounded-[7px] overflow-auto"
-                  onChange={(e) => getTicketId(Number(e.target.value))}
                 >
                   <option className="text-black" value="">
                     Select Ticket Type
@@ -482,7 +489,6 @@ const CityFilter = ({ search, isSearchVisible }) => {
                 <Select
                   {...register("event_subcategory")}
                   className="!text-white !bg-[#FFFFFF26] transition-all w-full appearance-none !py-2 !px-2 !pr-6 !rounded-[7px] overflow-auto"
-                  onChange={(e) => getSubCategoryId(e.target.value)}
                 >
                   <option className="text-black" value="">
                     Select Sub Category
@@ -527,6 +533,7 @@ const CityFilter = ({ search, isSearchVisible }) => {
           </Button>
         </div>
       </form>
+      )}
     </div>
   );
 };

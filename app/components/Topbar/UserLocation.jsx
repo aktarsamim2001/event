@@ -251,15 +251,15 @@ const UserLocation = () => {
   };
 
   return (
-    <div className="relative flex items-center gap-2 rounded-full px-2 py-2 text-[16px] text-white cursor-pointer select-none hover:border-primary transition-all duration-500">
+    <div className="relative flex items-center gap-2 rounded-full px-2 py-0.5 text-[16px] text-white cursor-pointer select-none hover:border-primary transition-all duration-500">
       <div
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2"
+        className="flex items-center gap-1"
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && setIsOpen(true)}
       >
-        <MdLocationPin size={25} />
+        <MdLocationPin size={24} />
         <span>
           Your Location: {hasMounted && userAddress?.city ? userAddress.city : "My Location"}
         </span>

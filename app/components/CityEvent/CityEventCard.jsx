@@ -11,6 +11,7 @@ import Button from "../ui/Button";
 import { toggleEventState } from "../../store/slice/eventFilterSlice";
 import { fetchEvents, setPage } from "../../store/slice/event/eventSlice";
 import { getFilteredEvents } from "../../store/slice/eventFilter/eventFilterSlice";
+import { useRouter } from "next/navigation";
 
 const CityEventCard = ({
   className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4",
@@ -22,8 +23,8 @@ const CityEventCard = ({
   const param = useParams();
   const pathname = usePathname();
   const city_slug = param?.slug || "";
-  const [searchParams, setSearchParams] = useSearchParams();
-
+  const searchParams = useSearchParams();
+  const router = useRouter();
   const { currentPage, totalPages, perPage } = useSelector(
     (state) => state.events.data
   );
@@ -54,19 +55,6 @@ const CityEventCard = ({
     dispatch(getFilteredEvents({ ...params }));
   }, [searchParams, city_slug, visibleEventsCount, dispatch]);
 
-  // Initialize URL parameters on component mount for /events/:slug route
-  useEffect(() => {
-    if (pathname.startsWith("/events/")) {
-      const currentParams = Object.fromEntries(searchParams.entries());
-      if (!currentParams.page) {
-        setSearchParams({
-          ...currentParams,
-          page: currentParams.page || "1",
-        });
-      }
-    }
-  }, [searchParams, setSearchParams, pathname]);
-
   useEffect(() => {
     const handleResize = () => {
       const currentWidth = window.innerWidth;
@@ -86,12 +74,15 @@ const CityEventCard = ({
   const handlePrevPage = () => {
     if (currentPage > 1) {
       const params = Object.fromEntries(searchParams.entries());
-      setSearchParams({ ...params, page: (currentPage - 1).toString() });
+      params.page = (currentPage - 1).toString();
+      router.replace({
+        pathname,
+        query: params,
+      });
       dispatch(setPage(currentPage - 1));
       dispatch(getFilteredEvents({
         ...params,
         city_slug,
-        page: (currentPage - 1).toString(),
         perPage: visibleEventsCount,
       }));
     }
@@ -100,12 +91,15 @@ const CityEventCard = ({
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       const params = Object.fromEntries(searchParams.entries());
-      setSearchParams({ ...params, page: (currentPage + 1).toString() });
+      params.page = (currentPage + 1).toString();
+      router.replace({
+        pathname,
+        query: params,
+      });
       dispatch(setPage(currentPage + 1));
       dispatch(getFilteredEvents({
         ...params,
         city_slug,
-        page: (currentPage + 1).toString(),
         perPage: visibleEventsCount,
       }));
     }
@@ -113,12 +107,15 @@ const CityEventCard = ({
 
   const handlePageClick = (page) => {
     const params = Object.fromEntries(searchParams.entries());
-    setSearchParams({ ...params, page: page.toString() });
+    params.page = page.toString();
+    router.replace({
+      pathname,
+      query: params,
+    });
     dispatch(setPage(page));
     dispatch(getFilteredEvents({
       ...params,
       city_slug,
-      page: page.toString(),
       perPage: visibleEventsCount,
     }));
   };
