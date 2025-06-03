@@ -10,6 +10,7 @@ const navbarSlice = createSlice({
   initialState,
   reducers: {
     toggleNavState: (state) => {
+      console.log("Toggling navbar state", state.toggleNavbar);
       state.toggleNavbar = !state.toggleNavbar;
     },
     toggleNavSearchState: (state) => {

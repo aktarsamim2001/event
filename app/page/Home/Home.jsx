@@ -11,8 +11,6 @@ import EventOrganizer from "../../components/Home/EventOrganizer";
 
 const Home = ({ content }) => {
 
-  console.log("content", content);
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.removeItem("filterFormValues");

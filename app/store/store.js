@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import headerReducer from "../store/slice/menu/headerSlice";
 import generalSettingsReducer from "../store/slice/settings/generalSettingsSlice";
 import globalSlice from "../store/globalSlice";
-import navbarSlice from "../store/navbar/navbarSlice";
+import navbarReducer from "../store/navbar/navbarSlice";
 import footerReducer from "../store/slice/footerMenu/footerMenuItem";
 import eventFilterSliceReducer from "../store/slice/eventFilter/eventFilterSlice";
 import dynamicPageReducer from "../store/slice/homePage/homePageSlice";
@@ -21,7 +21,7 @@ import formRequestReducer from "../store/slice/SupportForm/SupportFormSlice";
 export const store = configureStore({
   reducer: {
     globalSlice,
-    navbarSlice,
+    navbarSlice: navbarReducer,
     header: headerReducer,
     footer: footerReducer,
     generalSettings: generalSettingsReducer,

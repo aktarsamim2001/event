@@ -8,7 +8,6 @@ export async function generateMetadata({ params }) {
   const res = await fetch(`${rootUrl}api/events/details?slug=${slug}`, { cache: "no-store" });
   const apiData = await res.json();
   const meta = apiData?.data?.meta || {};
-  console.log("Meta Data:", meta);
 
   return {
     title: meta.meta_title || `Event - ${slug}`,

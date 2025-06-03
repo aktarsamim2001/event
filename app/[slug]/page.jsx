@@ -2,7 +2,6 @@ import DynamicPage from "./DynamicPage";
 import MetaScripts from "../components/MetaScript/MetaScripts";
 
 export async function generateMetadata({ params }) {
-  // Await params if it's a Promise (Next.js 14+ streaming routes)
   const awaitedParams =
     typeof params?.then === "function" ? await params : params;
   const slug = awaitedParams?.slug
@@ -16,7 +15,11 @@ export async function generateMetadata({ params }) {
   });
   const apiData = await res.json();
   const meta = apiData?.data?.meta || {};
-  console.log("Meta Data:", meta);
+
+  // const favicon = apiData?.data?.settings?.favicon || "/favicon.ico";
+
+  // const isProduction = process.env.NODE_ENV === "production";
+  // const canonicalUrl = `${rootUrl}${slug === "home" ? "" : slug}`;
 
   return {
     title: meta.meta_title || `RallyUp-${slug}`,

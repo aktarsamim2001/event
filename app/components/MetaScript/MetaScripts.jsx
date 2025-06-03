@@ -5,7 +5,6 @@ import { useSelector } from "react-redux";
 
 export default function MetaScripts() {
   const settings = useSelector((state) => state.generalSettings?.data);
-  console.log("📦 MetaScripts settings:", settings);
 
   // Extract only inner content of <script>...</script>
   const extractScriptContent = (rawScript) => {
@@ -26,10 +25,7 @@ export default function MetaScripts() {
       script.textContent = headScriptContent;
       script.setAttribute("data-meta-script", "head");
       document.head.appendChild(script);
-      console.log("🧠 Head script injected");
-    } else {
-      console.log("🧠 Head script is '#' or empty, so not injected");
-    }
+    } 
 
     return () => {
       const old = document.querySelector('script[data-meta-script="head"]');
@@ -44,20 +40,13 @@ export default function MetaScripts() {
       script.textContent = bodyScriptContent;
       script.setAttribute("data-meta-script", "body");
       document.body.appendChild(script);
-      console.log("💪 Body script injected");
-    } else {
-      console.log("💪 Body script is '#' or empty, so not injected");
-    }
-
+    } 
     const onLoad = () => {
       if (footerScriptContent) {
         const script = document.createElement("script");
         script.textContent = footerScriptContent;
         script.setAttribute("data-meta-script", "footer");
         document.body.appendChild(script);
-        console.log("🦶 Footer script injected");
-      } else {
-        console.log("🦶 Footer script is '#' or empty, so not injected");
       }
     };
 

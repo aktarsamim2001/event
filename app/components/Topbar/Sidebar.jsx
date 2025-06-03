@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleNavState } from "@/store/navbar/navbarSlice";
+import { toggleNavState } from "../../store/navbar/navbarSlice";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { IoMdClose } from "react-icons/io";
 import Image from "next/image";
-import { RootState } from "@/store";
 
 const Sidebar = () => {
   const toggleNavbar = useSelector((state) => state.navbarSlice.toggleNavbar);
+  console.log("Sidebar toggleNavbar:", toggleNavbar);
   const dispatch = useDispatch();
   const menus = useSelector((state) => state.menu.data);
   const logo = useSelector((state) => state?.generalSettings?.data?.logo);

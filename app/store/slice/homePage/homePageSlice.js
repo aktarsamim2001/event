@@ -27,13 +27,11 @@ export const { setPageData, setPageLoading, clearPageData } = dynamicPageSlice.a
 export default dynamicPageSlice.reducer;
 
 export const fetchPageData = (slug = "", latitude = "", longitude = "") => async (dispatch) => {
-  console.log("🟢 fetchPageData DISPATCHED");
   dispatch(setPageLoading(true));
   try {
     const response = await axios.get(`${rootUrl}api/web/pages/list`, {
       params: { slug, latitude, longitude },
     });
-    console.log("Response from fetchPageData:", response);
     if (response) {
       dispatch(setPageData(response.data.data));
     }
