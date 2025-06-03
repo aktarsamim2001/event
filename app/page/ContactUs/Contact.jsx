@@ -1,9 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import {
-  FaArrowRight,
-  FaPhone,
-} from "react-icons/fa";
+import { FaArrowRight, FaPhone } from "react-icons/fa";
 import { MdEmail, MdAccessTimeFilled } from "react-icons/md";
 import { GoChevronDown } from "react-icons/go";
 import { toast } from "react-toastify";
@@ -13,32 +13,40 @@ import Button from "../../components/ui/Button";
 import Select from "../../components/ui/Select";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGeneralSettings } from "../../store/slice/settings/generalSettingsSlice";
-import { resetCallRequest, setCallData, setCallError, setCallLoading, submitCallRequest } from "../../store/slice/callRequest/callRequestSlice";
+import {
+  resetCallRequest,
+  submitCallRequest,
+} from "../../store/slice/SupportForm/SupportFormSlice";
 
 const Contact = ({ content }) => {
-  const option = content?.support_page?.reasons || [];
+  const searchParams = useSearchParams();
+
   useEffect(() => {
-    localStorage.removeItem("filterFormValues");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("filterFormValues");
+    }
   }, []);
 
   const { breadcrumb, supportTypes } = content?.support_page || {};
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.generalSettings);
-  const formRequest = useSelector((state) => state.callRequest);
+  const callRequest = useSelector((state) => state.formRequest || {});
+  console.log("Call Request State:", callRequest);
   const {
     status = "idle",
     error = null,
     isSubmitted = false,
     message = null,
     data: successData = null,
-  } = formRequest || {};
+  } = callRequest;
+
   const isLoading = status === "loading";
 
   const initialFormState = {
     name: "",
     email: "",
     mobile: "",
-    reasons: "",
+    enquiry: "",
     message: "",
   };
 
@@ -46,41 +54,53 @@ const Contact = ({ content }) => {
   const [formErrors, setFormErrors] = useState({});
 
   useEffect(() => {
-    dispatch(fetchGeneralSettings());
+    dispatch(fetchGeneralSettings);
     dispatch(resetCallRequest());
   }, [dispatch]);
 
   useEffect(() => {
     if (isSubmitted) {
       setFormData(initialFormState);
+      toast.success(message || "Form submitted successfully!");
       window.scrollTo({ top: 0, behavior: "smooth" });
-      window.location.href = "/contact-success";
     }
-  }, [isSubmitted, message, successData]);
+  }, [isSubmitted, message]);
 
   useEffect(() => {
     if (error) {
-      const errorMessage = error === "Reason is required" ? "Please select a query type" : error;
+      console.log("Redux error:", error);
+      const errorMessage =
+        error === "Reason is required" ? "Please select a query type" : error;
       toast.error(errorMessage || "An error occurred");
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }, [error]);
 
+  useEffect(() => {
+    const scrollToContact = searchParams.get("scrollToContact");
+    if (scrollToContact === "true") {
+      setTimeout(() => {
+        const element = document.getElementById("contact-form");
+        if (element) {
+          const yOffset = element.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top: yOffset - 300, behavior: "smooth" });
+        }
+      }, 200);
+    }
+  }, [searchParams]);
+
   const validateForm = () => {
     const errors = {};
     if (!formData.name.trim()) errors.name = "Name is required";
     if (!formData.email.trim()) errors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) errors.email = "Email is invalid";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      errors.email = "Email is invalid";
     if (!formData.mobile.trim()) errors.mobile = "Phone number is required";
-    if (!formData.reasons) errors.reasons = "Please select a query type";
+    if (!formData.enquiry) errors.enquiry = "Please select a query type";
     if (!formData.message.trim()) errors.message = "Message is required";
 
-    // Ensure reasons is a valid option
-  if (formData.reasons && !option?.some(opt => opt.name === formData.reasons && opt.status === 'Show')) {
-    errors.reasons = 'Please select a valid query type';
-  }
-
     setFormErrors(errors);
+    console.log("Validation errors:", errors);
     return Object.keys(errors).length === 0;
   };
 
@@ -106,38 +126,70 @@ const Contact = ({ content }) => {
         name: formData.name,
         email: formData.email,
         mobile: formData.mobile,
-        enquiry: formData.reasons, 
+        enquiry: formData.enquiry, // Map enquiry to reason
         message: formData.message,
       };
-      dispatch(setCallLoading(true));
-      // Simulate async call, replace with actual API call if needed
-      setTimeout(() => {
-        // Simulate success
-        // dispatch(setCallData(payload));
-        dispatch(submitCallRequest(payload));
-        dispatch(setCallLoading(false));
-      }, 1000);
-      // dispatch(submitCallRequest(payload));
+      dispatch(submitCallRequest(payload));
     } else {
-      toast.error("Form validation failed. Please check your input.");
+      console.log("Form validation failed:", formErrors);
     }
   };
 
   const onReset = () => {
+    dispatch(resetCallRequest());
     setFormData(initialFormState);
     setFormErrors({});
   };
 
+  if (isSubmitted) {
+    return (
+      <div className="bg-black __responsive_gapY">
+        <div className="__container md:p-8 p-3 rounded-2xl __gradient">
+          <div className="text-center py-10 flex flex-col items-center justify-center">
+            <div className="bg-[#22F106] bg-opacity-20 border border-[#22F106] rounded-full p-4 mb-6">
+              <svg
+                className="w-10 h-10 text-black"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+            </div>
+
+            <h2 className="text-2xl font-bold text-white mb-3 __heading">
+              {message || "Form submitted successfully!"}
+            </h2>
+
+            <Button
+              variant={"fill"}
+              onClick={onReset}
+              className="inline-flex items-center gap-2"
+            >
+              Submit Another Form
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-black">
       <PageBanner title={breadcrumb?.title} subtitle={breadcrumb?.content} />
+
       <div className="__responsive_gap">
         <div className="__container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {supportTypes?.types?.map((card, index) => (
               <Link
                 key={index}
-                href={card?.redirection_page}
+                href={card?.redirection_page || "#"}
                 className="__gradient p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col gap-4 group"
               >
                 <div className="w-12 h-12 rounded-xl flex items-center border-2 border-[#FFFFFF26] hover:bg-[#FFFFFF26] justify-center">
@@ -175,7 +227,7 @@ const Contact = ({ content }) => {
             <h2 className="text-xl md:text-3xl font-bold mb-2 text-white __heading">
               Connect with Us
             </h2>
-            <div className="w-[160px] md:w-[240px] h-1 __accent_bg rounded-full mb-4 md:mb-8"></div>
+            <div className="w-[240px] h-1 __accent_bg rounded-full mb-4 md:mb-8"></div>
 
             <p className="text-white mb-8 __text">
               {data?.contact_information?.contact_content || "Loading..."}
@@ -275,10 +327,14 @@ const Contact = ({ content }) => {
             <h2 className="text-xl md:text-3xl font-bold mb-2 text-white __heading">
               Leave a Message
             </h2>
-            <div className="w-[170px] md:w-[250px] h-1 __accent_bg rounded-full mb-5 md:mb-8"></div>
+            <div className="w-[240px] h-1 __accent_bg rounded-full mb-5 md:mb-8"></div>
             <p className="text-white mb-4 __text">We are ready to help you!</p>
 
-            <form className="space-y-4 pt-3" id="contact-form" onSubmit={onSubmit}>
+            <form
+              className="space-y-4 pt-3"
+              id="contact-form"
+              onSubmit={onSubmit}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Input
@@ -289,7 +345,9 @@ const Contact = ({ content }) => {
                     placeholder="Your Name"
                     className="!rounded-xl w-full"
                   />
-                  {formErrors.name && <p className="text-red-500 text-sm">{formErrors.name}</p>}
+                  {formErrors.name && (
+                    <p className="text-red-500 text-sm">{formErrors.name}</p>
+                  )}
                 </div>
                 <div>
                   <Input
@@ -300,7 +358,9 @@ const Contact = ({ content }) => {
                     placeholder="Email Address"
                     className="!rounded-xl w-full"
                   />
-                  {formErrors.email && <p className="text-red-500 text-sm">{formErrors.email}</p>}
+                  {formErrors.email && (
+                    <p className="text-red-500 text-sm">{formErrors.email}</p>
+                  )}
                 </div>
                 <div>
                   <Input
@@ -311,28 +371,36 @@ const Contact = ({ content }) => {
                     placeholder="Phone Number"
                     className="!rounded-xl w-full"
                   />
-                  {formErrors.mobile && <p className="text-red-500 text-sm">{formErrors.mobile}</p>}
+                  {formErrors.mobile && (
+                    <p className="text-red-500 text-sm">{formErrors.mobile}</p>
+                  )}
                 </div>
                 <div className="relative">
                   <Select
-                    name="reasons"
-                    value={formData.reasons}
+                    name="enquiry"
+                    value={formData.enquiry}
                     onChange={handleChange}
-                    className={`!rounded-xl w-full ${formErrors.reasons ? "border-red-500" : ""}`}
+                    className="!rounded-xl w-full cursor-pointer"
                   >
                     <option className="text-black" value="">
                       Select Your Query
                     </option>
-                    {option?.filter(opt => opt.status === "Show").map((opt, index) => (
-                      <option key={index} className="text-black" value={opt.name}>
-                        {opt.name}
-                      </option>
-                    ))}
+                    <option className="text-black" value="General Inquiry">
+                      General Inquiry
+                    </option>
+                    <option className="text-black" value="Technical Support">
+                      Technical Support
+                    </option>
+                    <option className="text-black" value="Billing Question">
+                      Billing Question
+                    </option>
                   </Select>
                   <span className="absolute right-5 top-5 text-white">
                     <GoChevronDown />
                   </span>
-                  {formErrors.reasons && <p className="text-red-500 text-sm">{formErrors.reasons}</p>}
+                  {formErrors.enquiry && (
+                    <p className="text-red-500 text-sm">{formErrors.enquiry}</p>
+                  )}
                 </div>
               </div>
 
@@ -345,7 +413,9 @@ const Contact = ({ content }) => {
                   rows={4}
                   className="px-3 py-[14px] rounded-xl w-full outline-none bg-[#ffffff1b] text-white border custom_input_component"
                 ></textarea>
-                {formErrors.message && <p className="text-red-500 text-sm">{formErrors.message}</p>}
+                {formErrors.message && (
+                  <p className="text-red-500 text-sm">{formErrors.message}</p>
+                )}
               </div>
 
               <div className="flex justify-center pt-7">

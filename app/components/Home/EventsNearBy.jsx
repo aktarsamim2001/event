@@ -80,7 +80,7 @@ const EventsNearBy = ({ nearbyData }) => {
           onClick={() => handleViewAll(data.id)}
           className="border border-re-600 __view_all"
         >
-          <span className="flex items-center gap-x-2 text-white __view_all_btn">
+          <span className="cursor-pointer flex items-center gap-x-2 text-white __view_all_btn">
             View All <FaArrowRight />
           </span>
         </button>

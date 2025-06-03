@@ -30,39 +30,45 @@ const callRequestSlice = createSlice({
       state.error = null;
       state.isSubmitted = false;
       state.message = "";
-    }
+    },
   },
 });
 
-export const { setCallData, setCallLoading, setCallError, resetCallRequest } = callRequestSlice.actions;
+export const { setCallData, setCallLoading, setCallError, resetCallRequest } =
+  callRequestSlice.actions;
 export default callRequestSlice.reducer;
 
-// Action to handle the call request response
 export const handleCallRequestResponse = (response) => async (dispatch) => {
+  // We will remove setCallLoading(false) from here initially
   try {
     if (response?.data?.error === 0) {
       dispatch(setCallData(response.data.data));
+      dispatch(setCallLoading(false)); // Moved to submitCallRequest
       return true;
     } else {
       dispatch(setCallError(response.data.message || "Request failed"));
+      // dispatch(setCallLoading(false)); // Moved to submitCallRequest
       return false;
     }
   } catch (error) {
     dispatch(setCallError(error.message || "An unexpected error occurred"));
+    dispatch(setCallLoading(false)); // Moved to submitCallRequest
     return false;
-  } finally {
-    dispatch(setCallLoading(false));
   }
+  // 'finally' block removed from here to control loading state more precisely
 };
 
-// Action to submit a call request
 export const submitCallRequest = (formData) => async (dispatch) => {
   dispatch(setCallLoading(true));
   try {
     const response = await postSupportForm(formData);
-    return dispatch(handleCallRequestResponse(response));
+    console.log("Response from API:", response.data);
+    dispatch(setCallData(response.data.data));
+    // dispatch(handleCallRequestResponse(response.data));
   } catch (error) {
     dispatch(setCallError(error.message || "Failed to submit request"));
     return false;
+  } finally {
+    dispatch(setCallLoading(false));
   }
 };

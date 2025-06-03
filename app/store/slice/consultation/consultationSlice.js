@@ -30,7 +30,7 @@ const consultationSlice = createSlice({
       state.error = null;
       state.isSubmitted = false;
       state.message = "";
-    }
+    },
   },
 });
 
@@ -38,7 +38,7 @@ export const {
   setConsultationData,
   setConsultationLoading,
   setConsultationError,
-  resetConsultation
+  resetConsultation,
 } = consultationSlice.actions;
 
 export default consultationSlice.reducer;
@@ -57,7 +57,9 @@ export const handleConsultationResponse = (response) => async (dispatch) => {
       return false;
     }
   } catch (error) {
-    dispatch(setConsultationError(error.message || "An unexpected error occurred"));
+    dispatch(
+      setConsultationError(error.message || "An unexpected error occurred")
+    );
     return false;
   } finally {
     dispatch(setConsultationLoading(false));
@@ -65,18 +67,20 @@ export const handleConsultationResponse = (response) => async (dispatch) => {
 };
 
 // Action to submit a consultation booking
-export const submitConsultation = (formData) => async (dispatch) => {
+export const submitConsultation = (formData, isOk) => async (dispatch) => {
   dispatch(setConsultationLoading(true));
-  
+
   try {
     const response = await postBookConsultation(formData);
     dispatch(handleConsultationResponse(response));
+    isOk?.();
   } catch (error) {
-    
     // Handle axios error response
     if (error.response && error.response.data) {
     } else {
-      dispatch(setConsultationError(error.message || "Failed to book consultation"));
+      dispatch(
+        setConsultationError(error.message || "Failed to book consultation")
+      );
     }
     return false;
   } finally {

@@ -13,7 +13,6 @@ const callRequestSlice = createSlice({
   },
   reducers: {
     setCallData(state, action) {
-      // Store the entire data object from the API response
       state.data = action.payload;
       state.isSubmitted = true;
       state.message = "Call request submitted successfully";
@@ -38,11 +37,9 @@ const callRequestSlice = createSlice({
 export const { setCallData, setCallLoading, setCallError, resetCallRequest } = callRequestSlice.actions;
 export default callRequestSlice.reducer;
 
-// Action to handle the call request response
 export const handleCallRequestResponse = (response) => async (dispatch) => {
   try {
     if (response?.data?.error === 0) {
-      // If error is 0, it means success
       dispatch(setCallData(response.data.data));
       return true;
     } else {
